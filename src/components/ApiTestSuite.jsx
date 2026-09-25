@@ -208,7 +208,18 @@ export default function ApiTestSuite({ api }) {
     setError(null);
     setResult(null);
     try {
-      const data = await tryApi(api.id, { params, headers, apiKey: apiKey || undefined, body: isPostBody ? body : undefined });
+      const outboundHeaders = { ...headers };
+      if (apiKey && spec.auth?.placement?.includes("Authorization")) {
+        outboundHeaders.Authorization = `Bearer ${apiKey}`;
+      } else if (apiKey && (spec.auth?.type === "bearer" || api.auth === "token" || api.auth === "oauth")) {
+        outboundHeaders.Authorization = `Bearer ${apiKey}`;
+      }
+      const data = await tryApi(api.id, {
+        params,
+        headers: outboundHeaders,
+        apiKey: apiKey || undefined,
+        body: isPostBody ? body : undefined,
+      });
       setResult(data);
     } catch (e) {
       setError(e.message);
@@ -248,6 +259,12 @@ export default function ApiTestSuite({ api }) {
           </a>
         )}
       </div>
+
+      <p className="api-suite-honesty-note">
+        Live try sends <strong>GET</strong> through Qazaq Stack (query params + API key).{" "}
+        <code>Authorization</code> and <code>X-API-Key</code> headers forward when you set them.
+        POST, OAuth, and full provider flows use the docs or Code tab.
+      </p>
 
       {/* Request bar */}
       <div className="api-suite-request-bar">

@@ -8,8 +8,10 @@ const MAX_HTML_PREVIEW = 4000;
 const ALLOWED_REQUEST_HEADERS = new Set([
   "accept",
   "accept-language",
+  "authorization",
   "content-type",
   "user-agent",
+  "x-api-key",
   "x-requested-with",
 ]);
 
@@ -92,8 +94,31 @@ export async function proxyRequest(method, url, headers = {}) {
       method: method || "GET",
       signal: controller.signal,
       headers,
-      redirect: "follow",
+      redirect: "manual",
     });
+
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get("location") || "";
+      clearTimeout(timer);
+      return {
+        ok: false,
+        status: response.status,
+        statusText: response.statusText || "Redirect",
+        ms: Date.now() - start,
+        contentType: response.headers.get("content-type"),
+        format: "text",
+        body: location
+          ? `Redirect blocked (${response.status}) → ${location}\n\nLive try does not follow cross-origin redirects. Open the provider URL directly or use exported Postman collection.`
+          : `Redirect blocked (${response.status}). Live try does not follow redirects automatically.`,
+        rawBody: location,
+        parsed: null,
+        headers: {},
+        truncated: false,
+        size: 0,
+        checkedAt: new Date().toISOString(),
+        warning: "Redirect response — not followed for security.",
+      };
+    }
 
     const responseHeaders = {};
     response.headers.forEach((value, key) => {

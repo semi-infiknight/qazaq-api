@@ -1,20 +1,25 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { useLocation } from "react-router-dom";
 import IntentInputBar from "./IntentInputBar.jsx";
 import { useCatalogueNav } from "../context/CatalogueNavContext.jsx";
 
 export default function MobileBottomNav() {
+  const { pathname } = useLocation();
+  const onHome = pathname === "/";
   const { catalogue } = useCatalogueNav();
   const searchInputRef = useRef(null);
 
   useEffect(() => {
+    if (!onHome) return undefined;
     document.body.classList.add("catalogue-mobile-nav-active");
     return () => {
       document.body.classList.remove("catalogue-mobile-nav-active");
     };
-  }, []);
+  }, [onHome]);
 
   useEffect(() => {
+    if (!onHome) return undefined;
     const viewport = window.visualViewport;
     if (!viewport) return undefined;
 
@@ -43,7 +48,9 @@ export default function MobileBottomNav() {
       document.documentElement.style.removeProperty("--browser-ui-offset");
       document.documentElement.style.removeProperty("--viewport-offset-top");
     };
-  }, []);
+  }, [onHome]);
+
+  if (!onHome) return null;
 
   const nav = (
     <div className="catalogue-mobile-nav" aria-hidden={false}>

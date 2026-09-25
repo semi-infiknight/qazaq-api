@@ -119,7 +119,7 @@ function spireChipPoint(spire) {
   };
 }
 
-export default function KhazakArchFigure({ catalogueTotal = 688 }) {
+export default function KhazakArchFigure({ catalogueTotal = 723 }) {
   const rootRef = useRef(null);
   const aliveRef = useRef(true);
 

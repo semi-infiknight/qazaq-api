@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verify local API matches current KZ catalogue (688 APIs, commercial-first sort).
+# Verify local API matches current KZ catalogue (723 APIs after foreign rebadge filter).
 set -euo pipefail
 
 API="${1:-http://127.0.0.1:8787}"
@@ -21,11 +21,11 @@ health_count = health.get("apis", 0)
 first = (search.get("apis") or [{}])[0].get("title", "")
 
 fail = False
-if total != 688:
-    print(f"FAIL: search total={total} (expected 688 — stale pre-KZ-filter server?)")
+if total != 723:
+    print(f"FAIL: search total={total} (expected 723 — stale catalogue or filter drift?)")
     fail = True
-if health_count != 688:
-    print(f"FAIL: /health apis={health_count} (expected 688)")
+if health_count != 723:
+    print(f"FAIL: /health apis={health_count} (expected 723)")
     fail = True
 if first.startswith("Kaspi") or first.startswith("2GIS"):
     print(f"OK: first API is {first}")

@@ -79,6 +79,7 @@ export function buildTrySpec(entry) {
       headers: { Accept: "application/json, text/plain, */*" },
     },
     notes: [
+      "Live try: GET requests only, proxied through Qazaq Stack. Query API keys are supported; Authorization and X-API-Key headers forward when set. POST/OAuth flows need provider docs or Postman export.",
       entry.frequency ? `Update frequency: ${entry.frequency}` : null,
       entry.coverage ? `Coverage: ${entry.coverage}` : null,
       entry.copyable === false ? "Live testing may require provider onboarding." : null,

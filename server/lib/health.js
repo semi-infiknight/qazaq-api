@@ -1,5 +1,7 @@
 import { SITE_ORIGIN } from "./site.js";
 
+const TIMEOUT_MS = 15000;
+
 export function normalizeEndpoint(url) {
   if (!url) return url;
   return url

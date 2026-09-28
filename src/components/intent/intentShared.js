@@ -66,9 +66,9 @@ export function buildStackMermaid(suggestion, { direction = "LR" } = {}) {
   const lines = [
     flow,
     `  App["${escapeMermaidLabel(formatProductLabel(suggestion?.query))}"]`,
-    "  classDef app fill:#1a1025,stroke:#c76a3a,color:#f0ebe3,stroke-width:1.5px",
-    "  classDef layer fill:#141018,stroke:#8a5c40,color:#e8dfd6,stroke-width:1px",
-    "  classDef api fill:#0d0a10,stroke:#4a3d38,color:#d0c8c0,stroke-width:1px",
+    "  classDef app fill:#141414,stroke:#c9cfd6,color:#f2f2f2,stroke-width:1.5px",
+    "  classDef layer fill:#111111,stroke:#8a9098,color:#e8eaed,stroke-width:1px",
+    "  classDef api fill:#0a0a0a,stroke:#4a4a4a,color:#d0d0d0,stroke-width:1px",
     "  class App app",
   ];
 

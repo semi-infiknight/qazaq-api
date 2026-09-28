@@ -60,7 +60,6 @@ export default function IntentTimelineView({ suggestion, blocks }) {
           <IntentRevealItem segment="intro" variant="timeline">
             <div className="intent-timeline-rail" aria-hidden="true">
               <span className="intent-timeline-marker intent-timeline-marker--app">0</span>
-              <span className="intent-timeline-line" />
             </div>
             <div className="intent-timeline-panel intent-view-panel">
               <p className="intent-view-panel-kicker">{productLabel}</p>
@@ -80,13 +79,14 @@ export default function IntentTimelineView({ suggestion, blocks }) {
             <IntentRevealItem segment={`feature-${index}`} variant="timeline">
               <div className="intent-timeline-rail" aria-hidden="true">
                 <span className="intent-timeline-marker">{index + 1}</span>
-                {index < blocks.length - 1 ? <span className="intent-timeline-line" /> : null}
               </div>
               <div className="intent-timeline-panel intent-timeline-panel--feature intent-view-panel">
-                <p className="intent-timeline-step-kicker">
-                  Step {index + 1} · {block.apis.length} API{block.apis.length === 1 ? "" : "s"}
-                </p>
-                <FeatureStepTitle block={block} />
+                <header className="intent-timeline-panel-head">
+                  <p className="intent-timeline-step-kicker">
+                    Step {index + 1} · {block.apis.length} API{block.apis.length === 1 ? "" : "s"}
+                  </p>
+                  <FeatureStepTitle block={block} />
+                </header>
                 <FeatureStepMeta block={block} />
                 <div className="intent-prompt-api-grid intent-timeline-api-grid">
                   {block.apis.map((api, apiIndex) => (

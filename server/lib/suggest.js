@@ -17,7 +17,13 @@ const THRESHOLDS = {
   tfidf: { apiMin: 0.16, noFit: 0.2, requireCapability: 0.24 },
 };
 
-const MAX_APIS_PER_FEATURE = 4;
+/** Hard ceiling per feature block in the flow UI (not a target count). */
+const MAX_APIS_PER_FEATURE = Math.min(
+  Math.max(Number(process.env.SUGGEST_MAX_APIS_PER_FEATURE) || 12, 1),
+  24,
+);
+/** Stop adding APIs once scores fall below this fraction of the best match for the feature. */
+const API_SCORE_RELATIVE_FLOOR = 0.72;
 
 let cachedIndex = null;
 let cachedApiCount = 0;
@@ -120,7 +126,16 @@ async function matchApisForFeature(feature, apis, index, userQuery, hay, thresho
     (a, b) => b.final - a.final || b.semantic - a.semantic || a.api.title.localeCompare(b.api.title),
   );
 
-  return ranked.slice(0, MAX_APIS_PER_FEATURE).map((row) =>
+  const best = ranked[0]?.final ?? 0;
+  const scoreFloor = Math.max(thresholds.apiMin, best * API_SCORE_RELATIVE_FLOOR);
+  const selected = [];
+  for (const row of ranked) {
+    if (selected.length >= MAX_APIS_PER_FEATURE) break;
+    if (selected.length > 0 && row.final < scoreFloor) break;
+    selected.push(row);
+  }
+
+  return selected.map((row) =>
     enrichApi(row.api, feature, { final: row.final, semantic: row.semantic, overlap: row.overlap }, hay),
   );
 }

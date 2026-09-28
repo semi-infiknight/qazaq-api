@@ -4,7 +4,7 @@ import { defaultIntentStepDelay, useIntentReveal } from "../../hooks/useIntentRe
 const IntentRevealContext = createContext(null);
 
 export function buildIntentRevealSegments(blocks) {
-  const segments = ["canvas", "diagram", "intro"];
+  const segments = ["intro"];
 
   blocks.forEach((block, blockIndex) => {
     segments.push(`feature-${blockIndex}`);
@@ -20,9 +20,6 @@ function buildStepDelay(summary) {
   return (prevSegment, nextSegment, stepIndex) => {
     if (prevSegment === "intro" && summary) {
       return Math.min(4200, Math.max(1100, summary.length * 18 + 500));
-    }
-    if (prevSegment === "diagram" || prevSegment === "canvas") {
-      return 680;
     }
     return defaultIntentStepDelay(prevSegment, nextSegment, stepIndex);
   };

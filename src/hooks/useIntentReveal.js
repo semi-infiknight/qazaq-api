@@ -18,7 +18,6 @@ export function defaultIntentStepDelay(prevSegment, nextSegment) {
   if (nextSegment?.startsWith("api-")) return 280;
   if (nextSegment?.startsWith("feature-")) return 780;
   if (nextSegment === "intro") return 520;
-  if (nextSegment === "diagram" || nextSegment === "canvas") return 480;
   if (nextSegment?.startsWith("trunk-")) return 520;
   return 560;
 }

@@ -2466,13 +2466,6 @@ body.catalogue-loading-more .site-footer {
   min-height: 0;
 }
 
-.intent-reveal-item--timeline .intent-reveal-inner {
-  display: grid;
-  grid-template-columns: var(--tl-rail, 2rem) minmax(0, 1fr);
-  gap: var(--tl-gap, 0.75rem);
-  align-items: start;
-}
-
 .intent-reveal-item--inline {
   transform: translateY(10px);
 }

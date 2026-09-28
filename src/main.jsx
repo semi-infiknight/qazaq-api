@@ -4,6 +4,12 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
 
+try {
+  localStorage.removeItem("khazak-intent-view");
+} catch {
+  // ignore
+}
+
 const rootEl = document.getElementById("root");
 
 ReactDOM.createRoot(rootEl).render(

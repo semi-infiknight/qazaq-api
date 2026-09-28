@@ -67,9 +67,7 @@ export default function IntentFlowsView({ suggestion, blocks }) {
   return (
     <div className="intent-view intent-view--flows intent-flows">
       <div className="intent-view-canvas intent-flows-stage" ref={stageRef}>
-        <IntentRevealItem segment="canvas">
-          <IntentViewToolbar label="Integration flow" meta={intentViewMeta(blocks)} />
-        </IntentRevealItem>
+        <IntentViewToolbar label="Integration flow" meta={intentViewMeta(blocks)} />
         <FlowSvgEdges paths={paths} />
 
         <div className={`intent-flows-spine${isMobile ? " intent-flows-spine--stacked" : ""}`}>

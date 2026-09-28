@@ -6,7 +6,7 @@
     "description": "Public REST API for Qazaq Stack — the Kazakhstan integration directory. Read-only, authless, and CORS-open. Browse ~688 government and commercial APIs catalogued for Kazakhstan.",
     "contact": {
       "name": "Qazaq Stack",
-      "url": "https://qazaq.up.railway.app"
+      "url": "https://kz.up.railway.app"
     },
     "license": {
       "name": "Open data",

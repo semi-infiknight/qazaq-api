@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { fetchSearch, fetchSuggest } from "../lib/api.js";
 import ApiGrid, { SKELETON_COUNT } from "../components/ApiGrid.jsx";
 import DotMatrixLoader from "../components/DotMatrixLoader.jsx";
@@ -19,8 +18,6 @@ function sentinelInView(node) {
 }
 
 export default function HomePage() {
-  const location = useLocation();
-  const navigate = useNavigate();
   const { setCatalogue } = useCatalogueNav();
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
@@ -66,34 +63,6 @@ export default function HomePage() {
   useEffect(() => {
     loadCatalogue();
   }, [loadCatalogue]);
-
-  useEffect(() => {
-    const q = location.state?.intentQuery;
-    if (typeof q !== "string" || !q.trim()) return;
-
-    const trimmed = q.trim();
-    navigate("/", { replace: true, state: {} });
-    setQuery(trimmed);
-    setSubmittedQuery(trimmed);
-    setSuggesting(true);
-    setSuggestion(null);
-    setSuggestError(null);
-    setGeneratingStack(false);
-
-    fetchSuggest(trimmed)
-      .then((res) => {
-        setSuggestion(res);
-        requestAnimationFrame(() => {
-          document.getElementById("intent-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        setSuggestError(err.message || "Could not generate API suggestions. Try again.");
-        setSuggestion(null);
-      })
-      .finally(() => setSuggesting(false));
-  }, [location.state?.intentQuery, navigate]);
 
   const loadMore = useCallback(async () => {
     const offset = nextOffsetRef.current;

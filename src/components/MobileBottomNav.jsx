@@ -1,30 +1,26 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import IntentInputBar from "./IntentInputBar.jsx";
 import { INTENT_PROMPT_LINES } from "../data/intentPromptHints.js";
 import { useCatalogueNav } from "../context/CatalogueNavContext.jsx";
-import { isIntentDockRoute } from "../lib/intentDockRoutes.js";
 
 export default function MobileBottomNav() {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
   const onHome = pathname === "/";
-  const showDock = isIntentDockRoute(pathname);
   const { catalogue } = useCatalogueNav();
   const searchInputRef = useRef(null);
-  const [awayQuery, setAwayQuery] = useState("");
 
   useEffect(() => {
-    if (!showDock) return undefined;
+    if (!onHome) return undefined;
     document.body.classList.add("catalogue-mobile-nav-active");
     return () => {
       document.body.classList.remove("catalogue-mobile-nav-active");
     };
-  }, [showDock]);
+  }, [onHome]);
 
   useEffect(() => {
-    if (!showDock) return undefined;
+    if (!onHome) return undefined;
     const viewport = window.visualViewport;
     if (!viewport) return undefined;
 
@@ -53,19 +49,9 @@ export default function MobileBottomNav() {
       document.documentElement.style.removeProperty("--browser-ui-offset");
       document.documentElement.style.removeProperty("--viewport-offset-top");
     };
-  }, [showDock]);
-
-  useEffect(() => {
-    if (onHome) setAwayQuery("");
   }, [onHome]);
 
-  if (!showDock) return null;
-
-  const submitFromSubpage = () => {
-    const q = awayQuery.trim();
-    if (!q) return;
-    navigate("/", { state: { intentQuery: q } });
-  };
+  if (!onHome) return null;
 
   const nav = (
     <div className="catalogue-mobile-nav" aria-hidden={false}>
@@ -75,10 +61,10 @@ export default function MobileBottomNav() {
             <IntentInputBar
               variant="inline"
               inputRef={searchInputRef}
-              value={onHome ? catalogue?.query || "" : awayQuery}
-              onChange={onHome ? (next) => catalogue?.onQueryChange?.(next) : setAwayQuery}
-              onSubmit={onHome ? () => catalogue?.onIntentSubmit?.() : submitFromSubpage}
-              submitting={onHome ? catalogue?.intentSubmitting : false}
+              value={catalogue?.query || ""}
+              onChange={(next) => catalogue?.onQueryChange?.(next)}
+              onSubmit={() => catalogue?.onIntentSubmit?.()}
+              submitting={catalogue?.intentSubmitting}
               hintLines={INTENT_PROMPT_LINES}
               placeholder="Describe the Kazakhstan app you want to build…"
             />

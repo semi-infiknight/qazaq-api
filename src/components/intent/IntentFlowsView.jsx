@@ -67,11 +67,10 @@ export default function IntentFlowsView({ suggestion, blocks }) {
 
   return (
     <div className="intent-view intent-view--flows intent-flows">
-      <IntentRevealItem segment="canvas">
-        <IntentViewToolbar label="Flows" meta={intentViewMeta(blocks)} />
-      </IntentRevealItem>
-
       <div className="intent-view-canvas intent-flows-stage" ref={stageRef}>
+        <IntentRevealItem segment="canvas">
+          <IntentViewToolbar label="Integration flow" meta={intentViewMeta(blocks)} />
+        </IntentRevealItem>
         <FlowSvgEdges paths={paths} />
 
         <div className={`intent-flows-spine${isMobile ? " intent-flows-spine--stacked" : ""}`}>
@@ -86,7 +85,9 @@ export default function IntentFlowsView({ suggestion, blocks }) {
                 showFailPort={false}
               />
               {suggestion.summary ? (
-                <StreamingText text={suggestion.summary} className="intent-view-summary" />
+                <div className="intent-flows-start-note">
+                  <StreamingText text={suggestion.summary} className="intent-view-summary" />
+                </div>
               ) : null}
             </IntentRevealItem>
           </div>
@@ -99,28 +100,30 @@ export default function IntentFlowsView({ suggestion, blocks }) {
                     featureRefs.current[index] = el;
                   }}
                   type="feature"
+                  stepIndex={index + 1}
                   title={block.label}
-                  subtitle={block.parentLabel || "Feature layer"}
+                  subtitle={block.parentLabel || "Product capability"}
                   fields={[
                     block.why ? { label: "Why", value: block.why } : null,
-                    block.where ? { label: "Where", value: block.where, badge: "scope" } : null,
+                    block.where ? { label: "Where", value: block.where } : null,
                     {
-                      label: "APIs",
-                      value: `${block.apis.length} matched`,
-                      badge: `${block.apis.length}`,
+                      label: "Matches",
+                      value: block.apis.length === 1 ? "1 catalogue API" : `${block.apis.length} catalogue APIs`,
+                      badge: String(block.apis.length),
+                      badgeTone: "accent",
                     },
                   ].filter(Boolean)}
                 />
 
                 <div
-                  className="intent-flows-branch"
+                  className="intent-flows-branch intent-flows-branch-panel"
                   ref={(el) => {
                     branchRefs.current[index] = el;
                   }}
                 >
                   <p className="intent-view-branch-kicker">
                     <span className="intent-view-branch-dot intent-view-branch-dot--success" />
-                    Success branch · pick an API
+                    API options
                   </p>
                   <div className="intent-prompt-api-grid intent-flows-api-grid">
                     {block.apis.map((api, apiIndex) => (

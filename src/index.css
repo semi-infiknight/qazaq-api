@@ -3052,16 +3052,34 @@ body.catalogue-loading-more .site-footer {
 }
 
 /* Postman Flows canvas */
+.intent-view--flows {
+  margin-top: 0.75rem;
+}
+
+.intent-view--flows .intent-view-toolbar {
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
+}
+
 .intent-flows-stage {
   position: relative;
   overflow: visible;
-  padding: 0.85rem 0.65rem 1.1rem;
+  padding: 0.95rem 0.75rem 1.25rem;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 0%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 55%),
+    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--line) 38%, transparent) 1px, transparent 0) 0 0 / 18px
+      18px,
+    color-mix(in srgb, var(--code-bg) 92%, #000);
 }
 
 @media (min-width: 861px) {
   .intent-flows-stage {
-    overflow: auto;
-    padding: 1.25rem 1rem 1.5rem;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 1.1rem 1.15rem 1.65rem;
+    min-height: 12rem;
+    scrollbar-gutter: stable;
   }
 }
 
@@ -3077,19 +3095,24 @@ body.catalogue-loading-more .site-footer {
 .intent-flows-edge {
   stroke-width: 2px;
   stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.92;
+  transition: opacity var(--dur-2) var(--ease-smooth);
 }
 
 .intent-flows-edge--start {
-  stroke: color-mix(in srgb, #a0a0a0 80%, #fff);
+  stroke: color-mix(in srgb, var(--text-soft) 55%, var(--line));
 }
 
 .intent-flows-edge--feature {
-  stroke: color-mix(in srgb, var(--accent) 75%, #fff);
+  stroke: color-mix(in srgb, var(--accent) 70%, #fff);
 }
 
 .intent-flows-edge--api {
-  stroke: color-mix(in srgb, var(--green) 75%, #fff);
-  stroke-dasharray: 6 4;
+  stroke: color-mix(in srgb, var(--green) 68%, #fff);
+  stroke-dasharray: 5 5;
+  stroke-width: 1.75px;
+  opacity: 0.88;
 }
 
 .intent-flows-spine {
@@ -3107,7 +3130,7 @@ body.catalogue-loading-more .site-footer {
   .intent-flows-spine {
     flex-direction: row;
     align-items: flex-start;
-    gap: 2.5rem;
+    gap: 2.75rem;
     min-width: min-content;
     padding-bottom: 0.5rem;
   }
@@ -3125,8 +3148,8 @@ body.catalogue-loading-more .site-footer {
 
 @media (min-width: 861px) {
   .intent-flows-col {
-    width: min(100%, 17.5rem);
-    max-width: 17.5rem;
+    width: min(100%, 18.25rem);
+    max-width: 18.25rem;
     margin-inline: 0;
   }
 }
@@ -3139,12 +3162,26 @@ body.catalogue-loading-more .site-footer {
   position: relative;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  min-height: 8.5rem;
-  border: 1px solid var(--line);
+  min-height: 6.5rem;
+  border: 1px solid color-mix(in srgb, var(--line) 92%, var(--accent));
   border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--surface) 92%, #0a0a0a);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  background: color-mix(in srgb, var(--surface) 94%, #0a0a0a);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--text) 4%, transparent) inset,
+    0 12px 28px rgba(0, 0, 0, 0.2);
   overflow: hidden;
+  transition:
+    border-color var(--dur-2) var(--ease-smooth),
+    box-shadow var(--dur-2) var(--ease-smooth);
+}
+
+.intent-flows-node--compact {
+  min-height: 0;
+  grid-template-rows: auto auto;
+}
+
+.intent-reveal-item.is-visible .intent-flows-node {
+  border-color: color-mix(in srgb, var(--line) 75%, var(--accent));
 }
 
 .intent-flows-node-port--in {
@@ -3207,9 +3244,11 @@ body.catalogue-loading-more .site-footer {
 }
 
 .intent-flows-node-title {
-  font-size: 0.88rem;
+  font-size: 0.9rem;
+  font-weight: 600;
   line-height: 1.35;
   color: var(--text);
+  overflow-wrap: anywhere;
 }
 
 .intent-flows-node-subtitle {
@@ -3253,10 +3292,15 @@ body.catalogue-loading-more .site-footer {
   align-items: center;
   padding: 0.1rem 0.35rem;
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, #a0a0a0 22%, var(--surface-alt));
+  background: color-mix(in srgb, var(--text-mute) 22%, var(--surface-alt));
   font-family: var(--font-mono);
   font-size: 0.62rem;
-  color: #e0e0e0;
+  color: var(--text-soft);
+}
+
+.intent-flows-field-badge--accent {
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface-alt));
+  color: color-mix(in srgb, var(--accent) 75%, var(--text));
 }
 
 .intent-flows-field-text {
@@ -3321,14 +3365,40 @@ body.catalogue-loading-more .site-footer {
   background: color-mix(in srgb, var(--red) 70%, #fff);
 }
 
+.intent-flows-start-note {
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  background: color-mix(in srgb, var(--surface-alt) 45%, transparent);
+}
+
+.intent-flows-start-note .intent-view-summary {
+  margin-top: 0;
+  max-width: none;
+  font-size: 0.84rem;
+}
+
 .intent-flows-branch {
   display: grid;
   gap: 0.65rem;
   padding-top: 0.15rem;
 }
 
+.intent-flows-branch-panel {
+  padding: 0.7rem 0.65rem 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--line) 85%, transparent);
+  border-left: 3px solid color-mix(in srgb, var(--green) 65%, var(--accent));
+  background: color-mix(in srgb, var(--surface) 40%, transparent);
+}
+
 .intent-flows-api-grid {
   grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.intent-flows-api-grid .api-card {
+  border-color: color-mix(in srgb, var(--line) 90%, transparent);
 }
 
 /* Zapier-style structured flowchart */

@@ -1,4 +1,4 @@
-/** Shared chrome for Timeline, Flows, and Stack intent views. */
+/** Shared chrome for intent result views. */
 export default function IntentViewToolbar({ label, meta }) {
   return (
     <div className="intent-view-toolbar">

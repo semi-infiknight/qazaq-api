@@ -56,14 +56,26 @@ function pathsEqual(a, b) {
   });
 }
 
-export function useFlowEdgePaths(stageRef, pairs, deps = [], pairReady = () => true) {
+function findScrollParent(el) {
+  let node = el?.parentElement;
+  while (node) {
+    const { overflowX, overflowY } = getComputedStyle(node);
+    if (/(auto|scroll|overlay)/.test(overflowX) || /(auto|scroll|overlay)/.test(overflowY)) {
+      return node;
+    }
+    node = node.parentElement;
+  }
+  return null;
+}
+
+export function useFlowEdgePaths(rootRef, pairs, deps = [], pairReady = () => true, scrollRootRef = null) {
   const [paths, setPaths] = useState([]);
   const pairReadyRef = useRef(pairReady);
   pairReadyRef.current = pairReady;
 
   useLayoutEffect(() => {
-    const stage = stageRef.current;
-    if (!stage) return;
+    const root = rootRef.current;
+    if (!root) return;
 
     let rafId = 0;
 
@@ -89,14 +101,14 @@ export function useFlowEdgePaths(stageRef, pairs, deps = [], pairReady = () => t
           let from;
           let to;
           if (kind === "branch") {
-            from = bottomCenter(fromEl, stage);
-            to = topCenter(toEl, stage);
+            from = bottomCenter(fromEl, root);
+            to = topCenter(toEl, root);
           } else if (stacked) {
-            from = bottomCenter(fromEl, stage);
-            to = topCenter(toEl, stage);
+            from = bottomCenter(fromEl, root);
+            to = topCenter(toEl, root);
           } else {
-            from = centerRight(fromEl, stage);
-            to = centerLeft(toEl, stage);
+            from = centerRight(fromEl, root);
+            to = centerLeft(toEl, root);
           }
 
           return {
@@ -124,17 +136,20 @@ export function useFlowEdgePaths(stageRef, pairs, deps = [], pairReady = () => t
     const t1 = window.setTimeout(measure, 400);
     const t2 = window.setTimeout(measure, 820);
     const ro = new ResizeObserver(scheduleMeasure);
-    ro.observe(stage);
+    ro.observe(root);
+    const scrollRoot = scrollRootRef?.current || findScrollParent(root);
+    scrollRoot?.addEventListener("scroll", scheduleMeasure, { passive: true });
     window.addEventListener("resize", scheduleMeasure);
     return () => {
       cancelAnimationFrame(rafId);
       window.clearTimeout(t1);
       window.clearTimeout(t2);
       ro.disconnect();
+      scrollRoot?.removeEventListener("scroll", scheduleMeasure);
       window.removeEventListener("resize", scheduleMeasure);
     };
     // pairReady is stable via ref; reveal step / generating passed via deps
-  }, [stageRef, pairs, ...deps]);
+  }, [rootRef, scrollRootRef, pairs, ...deps]);
 
   return paths;
 }

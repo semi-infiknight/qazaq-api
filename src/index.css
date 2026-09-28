@@ -2798,7 +2798,10 @@ body.catalogue-loading-more .site-footer {
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: 0.92;
-  transition: opacity var(--dur-2) var(--ease-smooth);
+}
+
+.intent-prompt.is-generating .intent-flows-edge {
+  transition: none;
 }
 
 .intent-flows-edge--start {
@@ -2825,6 +2828,7 @@ body.catalogue-loading-more .site-footer {
   gap: 1.35rem;
   min-width: 0;
   padding-bottom: 0.25rem;
+  isolation: isolate;
 }
 
 @media (min-width: 861px) {

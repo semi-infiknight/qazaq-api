@@ -35,6 +35,7 @@ export default function IntentFlowsView({ suggestion, blocks }) {
   const isMobile = useMobileLayout();
   const reveal = useIntentRevealState();
   const stageRef = useRef(null);
+  const spineRef = useRef(null);
   const startRef = useRef(null);
   const featureRefs = useRef([]);
   const branchRefs = useRef([]);
@@ -82,7 +83,7 @@ export default function IntentFlowsView({ suggestion, blocks }) {
     return flowSegmentReady(r, pair.fromSegment) && flowSegmentReady(r, pair.toSegment);
   }, []);
 
-  const paths = useFlowEdgePaths(stageRef, edgePairs, [blocks.length, reveal?.step, reveal?.isGenerating], pairReady);
+  const paths = useFlowEdgePaths(spineRef, edgePairs, [blocks.length, reveal?.step, reveal?.isGenerating], pairReady, stageRef);
 
   const productLabel = formatProductLabel(suggestion?.query);
 
@@ -90,9 +91,12 @@ export default function IntentFlowsView({ suggestion, blocks }) {
     <div className="intent-view intent-view--flows intent-flows">
       <div className="intent-view-canvas intent-flows-stage" ref={stageRef}>
         <IntentViewToolbar label="Integration flow" meta={intentViewMeta(blocks)} />
-        <FlowSvgEdges paths={paths} />
 
-        <div className={`intent-flows-spine${isMobile ? " intent-flows-spine--stacked" : ""}`}>
+        <div
+          ref={spineRef}
+          className={`intent-flows-spine${isMobile ? " intent-flows-spine--stacked" : ""}`}
+        >
+          <FlowSvgEdges paths={paths} />
           <div className="intent-flows-col intent-flows-col--start">
             <IntentRevealItem segment="intro">
               <PostmanFlowNode

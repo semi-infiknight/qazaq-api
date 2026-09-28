@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useLocation } from "react-router-dom";
 import IntentInputBar from "./IntentInputBar.jsx";
+import { INTENT_PROMPT_LINES } from "../data/intentPromptHints.js";
 import { useCatalogueNav } from "../context/CatalogueNavContext.jsx";
 
 export default function MobileBottomNav() {
@@ -64,6 +65,7 @@ export default function MobileBottomNav() {
               onChange={(next) => catalogue?.onQueryChange?.(next)}
               onSubmit={() => catalogue?.onIntentSubmit?.()}
               submitting={catalogue?.intentSubmitting}
+              hintLines={INTENT_PROMPT_LINES}
               placeholder="Describe the Kazakhstan app you want to build…"
             />
           </div>

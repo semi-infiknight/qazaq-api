@@ -5,8 +5,7 @@ import DotMatrixLoader from "../components/DotMatrixLoader.jsx";
 import { IntentResults } from "../components/IntentSuggest.jsx";
 import IntentInputBar from "../components/IntentInputBar.jsx";
 import KhazakArchFigure from "../components/KhazakArchFigure.jsx";
-import IntentPromptHints from "../components/IntentPromptHints.jsx";
-import { INTENT_PROMPT_HINTS, INTENT_PROMPT_LINES } from "../data/intentPromptHints.js";
+import { INTENT_PROMPT_LINES } from "../data/intentPromptHints.js";
 import { useCatalogueNav } from "../context/CatalogueNavContext.jsx";
 
 const PAGE_SIZE = 24;
@@ -199,12 +198,6 @@ export default function HomePage() {
                 submitting={suggesting || generatingStack}
                 hintLines={INTENT_PROMPT_LINES}
               />
-              {!showingIntent && (
-                <IntentPromptHints
-                  hints={INTENT_PROMPT_HINTS}
-                  onSelect={(hint) => setQuery(hint.prompt)}
-                />
-              )}
             </div>
           </section>
 

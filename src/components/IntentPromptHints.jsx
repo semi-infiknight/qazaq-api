@@ -1,3 +1,4 @@
+/** @deprecated Example cards removed — prompts cycle in IntentInputBar; Tab accepts the active ghost. */
 export default function IntentPromptHints({ hints, onSelect }) {
   return (
     <div className="intent-hints">

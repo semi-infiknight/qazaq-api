@@ -36,7 +36,7 @@ export default function IntentInputBar({
   const hero = variant === "hero";
   const hasValue = Boolean(value.trim());
   const showGhost = Boolean(hintLines?.length) && !hasValue && !submitting;
-  const { text: ghostText } = useTypewriterCycle(hintLines, { active: showGhost });
+  const { text: ghostText, currentLine: ghostPrompt } = useTypewriterCycle(hintLines, { active: showGhost });
 
   useEffect(() => {
     resizeField(fieldRef.current);
@@ -86,6 +86,11 @@ export default function IntentInputBar({
           disabled={submitting}
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={(event) => {
+            if (event.key === "Tab" && showGhost && ghostPrompt && !event.shiftKey) {
+              event.preventDefault();
+              onChange(ghostPrompt);
+              return;
+            }
             if (event.key === "Enter" && !event.shiftKey) {
               event.preventDefault();
               if (value.trim() && !submitting) onSubmit();

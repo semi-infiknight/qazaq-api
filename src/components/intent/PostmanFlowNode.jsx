@@ -24,7 +24,6 @@ export default function PostmanFlowNode({
   subtitle,
   fields = [],
   nodeRef,
-  showFailPort = false,
   stepIndex,
 }) {
   const meta = NODE_META[type] || NODE_META.feature;
@@ -36,8 +35,6 @@ export default function PostmanFlowNode({
       className={`intent-flows-node intent-flows-node--${meta.tone}${fields.length ? "" : " intent-flows-node--compact"}`}
       aria-label={title}
     >
-      <span className="intent-flows-node-port intent-flows-node-port--in" aria-hidden="true" />
-
       <header className="intent-flows-node-head">
         <span className="intent-flows-node-icon" aria-hidden="true">
           {meta.icon}
@@ -56,17 +53,6 @@ export default function PostmanFlowNode({
           ))}
         </div>
       ) : null}
-
-      <footer className="intent-flows-node-foot">
-        <span className="intent-flows-node-port intent-flows-node-port--success" data-port="success">
-          Success
-        </span>
-        {showFailPort ? (
-          <span className="intent-flows-node-port intent-flows-node-port--fail" data-port="fail">
-            Fail
-          </span>
-        ) : null}
-      </footer>
     </article>
   );
 }

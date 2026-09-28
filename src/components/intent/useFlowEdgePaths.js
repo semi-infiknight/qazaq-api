@@ -1,18 +1,6 @@
 import { useLayoutEffect, useState } from "react";
 import { MOBILE_LAYOUT_QUERY } from "../../hooks/useMediaQuery.js";
 
-function portPoint(nodeEl, root, port) {
-  const portEl = nodeEl?.querySelector(`[data-port="${port}"]`);
-  if (!portEl) {
-    const r = nodeEl.getBoundingClientRect();
-    const o = root.getBoundingClientRect();
-    return { x: r.right - o.left, y: r.top - o.top + r.height / 2 };
-  }
-  const r = portEl.getBoundingClientRect();
-  const o = root.getBoundingClientRect();
-  return { x: r.left - o.left + r.width / 2, y: r.top - o.top + r.height / 2 };
-}
-
 function centerRight(el, root) {
   const r = el.getBoundingClientRect();
   const o = root.getBoundingClientRect();
@@ -71,7 +59,7 @@ export function useFlowEdgePaths(stageRef, pairs, deps = []) {
       const stacked = window.matchMedia(MOBILE_LAYOUT_QUERY).matches;
 
       const next = pairs
-        .map(({ getFrom, getTo, kind = "spine", tone = "feature", fromPort }, index) => {
+        .map(({ getFrom, getTo, kind = "spine", tone = "feature" }, index) => {
           const fromEl = getFrom?.();
           const toEl = getTo?.();
           if (!fromEl || !toEl) return null;
@@ -79,7 +67,7 @@ export function useFlowEdgePaths(stageRef, pairs, deps = []) {
           let from;
           let to;
           if (kind === "branch") {
-            from = portPoint(fromEl, stage, fromPort || "success");
+            from = bottomCenter(fromEl, stage);
             to = topCenter(toEl, stage);
           } else if (stacked) {
             from = bottomCenter(fromEl, stage);

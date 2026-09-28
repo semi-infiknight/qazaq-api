@@ -55,7 +55,6 @@ export default function IntentFlowsView({ suggestion, blocks }) {
         getTo: () => branchRefs.current[index],
         kind: "branch",
         tone: "api",
-        fromPort: "success",
       });
     });
     return pairs;
@@ -82,7 +81,6 @@ export default function IntentFlowsView({ suggestion, blocks }) {
                 title={productLabel}
                 subtitle="Product"
                 fields={[]}
-                showFailPort={false}
               />
               {suggestion.summary ? (
                 <div className="intent-flows-start-note">

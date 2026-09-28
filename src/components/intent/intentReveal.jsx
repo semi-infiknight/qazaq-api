@@ -4,7 +4,7 @@ import { defaultIntentStepDelay, useIntentReveal } from "../../hooks/useIntentRe
 const IntentRevealContext = createContext(null);
 
 export function buildIntentRevealSegments(blocks) {
-  const segments = ["canvas", "intro"];
+  const segments = ["canvas", "diagram", "intro"];
 
   blocks.forEach((block, blockIndex) => {
     segments.push(`feature-${blockIndex}`);

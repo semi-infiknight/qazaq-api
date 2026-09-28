@@ -1,4 +1,4 @@
-import IntentFlowsView from "./intent/IntentFlowsView.jsx";
+import IntentTimelineView from "./intent/IntentTimelineView.jsx";
 import { IntentRevealProvider, useIntentRevealState } from "./intent/intentReveal.jsx";
 import { featureBlocks, formatProductLabel } from "./intent/intentShared.js";
 
@@ -133,7 +133,7 @@ function IntentResultsBody({ suggestion, onGeneratingChange }) {
     <IntentRevealProvider blocks={blocks} summary={suggestion.summary || ""} onGeneratingChange={onGeneratingChange}>
       <IntentPromptShell blocks={blocks} suggestion={suggestion}>
         <div className="intent-view-pane">
-          <IntentFlowsView suggestion={suggestion} blocks={blocks} />
+          <IntentTimelineView suggestion={suggestion} blocks={blocks} />
         </div>
       </IntentPromptShell>
     </IntentRevealProvider>

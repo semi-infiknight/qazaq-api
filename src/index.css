@@ -2832,18 +2832,33 @@ body.catalogue-loading-more .site-footer {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 20%, transparent);
 }
 
-/* Timeline numbered steps (shadcn-inspired) */
+/* Timeline — vertical integration steps */
+.intent-view--timeline .intent-view-toolbar {
+  margin-bottom: 0.65rem;
+}
+
+.intent-timeline-diagram {
+  margin-bottom: 0.35rem;
+}
+
+.intent-timeline-diagram .intent-prompt-mermaid {
+  min-height: 7.5rem;
+}
+
 .intent-timeline-list {
   list-style: none;
-  margin: 1.1rem 0 0;
+  margin: 0.85rem 0 0;
   padding: 0;
   display: grid;
   gap: 0;
 }
 
 .intent-timeline-step {
-  /* Rail + panel columns live on .intent-reveal-item--timeline .intent-reveal-inner */
-  padding-bottom: 1.1rem;
+  padding-bottom: 0.35rem;
+}
+
+.intent-timeline-step:last-child {
+  padding-bottom: 0;
 }
 
 .intent-timeline-rail {
@@ -2866,6 +2881,13 @@ body.catalogue-loading-more .site-footer {
   font-weight: 600;
   color: var(--accent);
   flex-shrink: 0;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.intent-reveal-item--timeline.is-active .intent-timeline-marker:not(.intent-timeline-marker--app) {
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+  color: var(--text);
 }
 
 .intent-timeline-marker--app {
@@ -2890,19 +2912,58 @@ body.catalogue-loading-more .site-footer {
   );
 }
 
+.intent-timeline-panel.intent-view-panel {
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+}
+
 .intent-timeline-panel--feature {
-  background: color-mix(in srgb, var(--surface) 92%, #0a0a0a);
+  background: color-mix(in srgb, var(--surface) 94%, #0a0a0a);
+}
+
+.intent-timeline-step-kicker {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-mute);
 }
 
 .intent-timeline-step-title {
   margin: 0 0 0.35rem;
   color: var(--text);
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
 }
 
-.intent-timeline-panel .intent-prompt-api-grid {
-  margin-top: 0.85rem;
+.intent-view-summary--timeline {
+  max-width: none;
+  margin-top: 0.35rem;
+}
+
+.intent-view-summary--muted {
+  color: var(--text-mute);
+}
+
+.intent-timeline-api-grid {
+  margin-top: 0.9rem;
+  gap: 0.85rem;
+}
+
+.intent-reveal-item--timeline .intent-reveal-inner {
+  gap: 1rem;
+}
+
+@media (min-width: 861px) {
+  .intent-timeline-list {
+    margin-top: 1rem;
+  }
+
+  .intent-timeline-diagram .intent-prompt-mermaid {
+    min-height: 9rem;
+  }
 }
 
 /* Postman Flows canvas */

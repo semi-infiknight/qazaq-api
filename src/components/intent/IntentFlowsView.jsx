@@ -7,10 +7,11 @@ import { useFlowEdgePaths } from "./useFlowEdgePaths.js";
 import { formatProductLabel, intentViewMeta } from "./intentShared.js";
 import { useMobileLayout } from "../../hooks/useMediaQuery.js";
 
-function flowSegmentSettled(reveal, segmentId) {
+function flowSegmentReady(reveal, segmentId) {
   if (!reveal) return true;
-  if (reveal.reducedMotion) return reveal.isVisible(segmentId);
-  return reveal.isVisible(segmentId) && !reveal.isActive(segmentId);
+  if (!reveal.isVisible(segmentId)) return false;
+  if (reveal.reducedMotion || !reveal.isGenerating) return true;
+  return !reveal.isActive(segmentId);
 }
 
 function FlowSvgEdges({ paths }) {
@@ -78,10 +79,10 @@ export default function IntentFlowsView({ suggestion, blocks }) {
 
   const pairReady = useCallback((pair) => {
     const r = revealRef.current;
-    return flowSegmentSettled(r, pair.fromSegment) && flowSegmentSettled(r, pair.toSegment);
+    return flowSegmentReady(r, pair.fromSegment) && flowSegmentReady(r, pair.toSegment);
   }, []);
 
-  const paths = useFlowEdgePaths(stageRef, edgePairs, [blocks.length, reveal?.step], pairReady);
+  const paths = useFlowEdgePaths(stageRef, edgePairs, [blocks.length, reveal?.step, reveal?.isGenerating], pairReady);
 
   const productLabel = formatProductLabel(suggestion?.query);
 

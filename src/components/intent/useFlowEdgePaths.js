@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { MOBILE_LAYOUT_QUERY } from "../../hooks/useMediaQuery.js";
 
 function centerRight(el, root) {
@@ -48,24 +48,43 @@ function branchPath(from, to, stacked) {
   return `M ${from.x} ${from.y} C ${from.x} ${midY}, ${to.x} ${midY}, ${to.x} ${to.y}`;
 }
 
+function pathsEqual(a, b) {
+  if (a.length !== b.length) return false;
+  return a.every((path, index) => {
+    const other = b[index];
+    return path.id === other.id && path.d === other.d && path.tone === other.tone;
+  });
+}
+
 export function useFlowEdgePaths(stageRef, pairs, deps = [], pairReady = () => true) {
   const [paths, setPaths] = useState([]);
+  const pairReadyRef = useRef(pairReady);
+  pairReadyRef.current = pairReady;
 
   useLayoutEffect(() => {
     const stage = stageRef.current;
     if (!stage) return;
 
+    let rafId = 0;
+
     const measure = () => {
       const stacked = window.matchMedia(MOBILE_LAYOUT_QUERY).matches;
+      const ready = pairReadyRef.current;
 
       const next = pairs
         .map((pair, index) => {
-          if (!pairReady(pair)) return null;
+          if (!ready(pair)) return null;
 
           const { getFrom, getTo, kind = "spine", tone = "feature" } = pair;
           const fromEl = getFrom?.();
           const toEl = getTo?.();
           if (!fromEl || !toEl) return null;
+
+          const fromRect = fromEl.getBoundingClientRect();
+          const toRect = toEl.getBoundingClientRect();
+          if (fromRect.width < 2 || fromRect.height < 2 || toRect.width < 2 || toRect.height < 2) {
+            return null;
+          }
 
           let from;
           let to;
@@ -93,20 +112,28 @@ export function useFlowEdgePaths(stageRef, pairs, deps = [], pairReady = () => t
         })
         .filter(Boolean);
 
-      setPaths(next);
+      setPaths((prev) => (pathsEqual(prev, next) ? prev : next));
+    };
+
+    const scheduleMeasure = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(measure);
     };
 
     measure();
-    const afterReveal = window.setTimeout(measure, 780);
-    const ro = new ResizeObserver(measure);
+    const t1 = window.setTimeout(measure, 400);
+    const t2 = window.setTimeout(measure, 820);
+    const ro = new ResizeObserver(scheduleMeasure);
     ro.observe(stage);
-    window.addEventListener("resize", measure);
+    window.addEventListener("resize", scheduleMeasure);
     return () => {
-      window.clearTimeout(afterReveal);
+      cancelAnimationFrame(rafId);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
       ro.disconnect();
-      window.removeEventListener("resize", measure);
+      window.removeEventListener("resize", scheduleMeasure);
     };
-    // pairReady is stable; reveal step is passed via deps
+    // pairReady is stable via ref; reveal step / generating passed via deps
   }, [stageRef, pairs, ...deps]);
 
   return paths;

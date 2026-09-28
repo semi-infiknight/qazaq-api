@@ -1,28 +1,31 @@
 import { useLayoutEffect, useRef, useState } from "react";
+import { bindLayoutMeasure } from "../../lib/layoutMeasure.js";
 import { MOBILE_LAYOUT_QUERY } from "../../hooks/useMediaQuery.js";
+
+const round = (n) => Math.round(n * 10) / 10;
 
 function centerRight(el, root) {
   const r = el.getBoundingClientRect();
   const o = root.getBoundingClientRect();
-  return { x: r.right - o.left, y: r.top - o.top + r.height / 2 };
+  return { x: round(r.right - o.left), y: round(r.top - o.top + r.height / 2) };
 }
 
 function centerLeft(el, root) {
   const r = el.getBoundingClientRect();
   const o = root.getBoundingClientRect();
-  return { x: r.left - o.left, y: r.top - o.top + r.height / 2 };
+  return { x: round(r.left - o.left), y: round(r.top - o.top + r.height / 2) };
 }
 
 function topCenter(el, root) {
   const r = el.getBoundingClientRect();
   const o = root.getBoundingClientRect();
-  return { x: r.left - o.left + r.width / 2, y: r.top - o.top };
+  return { x: round(r.left - o.left + r.width / 2), y: round(r.top - o.top) };
 }
 
 function bottomCenter(el, root) {
   const r = el.getBoundingClientRect();
   const o = root.getBoundingClientRect();
-  return { x: r.left - o.left + r.width / 2, y: r.bottom - o.top };
+  return { x: round(r.left - o.left + r.width / 2), y: round(r.bottom - o.top) };
 }
 
 function bezierPath(from, to, bend = 0.45) {
@@ -40,10 +43,6 @@ function verticalBezierPath(from, to, bend = 0.45) {
 }
 
 function branchPath(from, to, stacked) {
-  if (stacked) {
-    const midY = from.y + (to.y - from.y) * 0.35;
-    return `M ${from.x} ${from.y} C ${from.x} ${midY}, ${to.x} ${midY}, ${to.x} ${to.y}`;
-  }
   const midY = from.y + (to.y - from.y) * 0.35;
   return `M ${from.x} ${from.y} C ${from.x} ${midY}, ${to.x} ${midY}, ${to.x} ${to.y}`;
 }
@@ -56,28 +55,16 @@ function pathsEqual(a, b) {
   });
 }
 
-function findScrollParent(el) {
-  let node = el?.parentElement;
-  while (node) {
-    const { overflowX, overflowY } = getComputedStyle(node);
-    if (/(auto|scroll|overlay)/.test(overflowX) || /(auto|scroll|overlay)/.test(overflowY)) {
-      return node;
-    }
-    node = node.parentElement;
-  }
-  return null;
-}
-
-export function useFlowEdgePaths(rootRef, pairs, deps = [], pairReady = () => true, scrollRootRef = null) {
+export function useFlowEdgePaths(rootRef, pairs, deps = [], pairReady = () => true, extraScrollRefs = []) {
   const [paths, setPaths] = useState([]);
   const pairReadyRef = useRef(pairReady);
   pairReadyRef.current = pairReady;
+  const extraScrollRefsRef = useRef(extraScrollRefs);
+  extraScrollRefsRef.current = extraScrollRefs;
 
   useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-
-    let rafId = 0;
 
     const measure = () => {
       const stacked = window.matchMedia(MOBILE_LAYOUT_QUERY).matches;
@@ -127,29 +114,17 @@ export function useFlowEdgePaths(rootRef, pairs, deps = [], pairReady = () => tr
       setPaths((prev) => (pathsEqual(prev, next) ? prev : next));
     };
 
-    const scheduleMeasure = () => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(measure);
-    };
-
     measure();
     const t1 = window.setTimeout(measure, 400);
     const t2 = window.setTimeout(measure, 820);
-    const ro = new ResizeObserver(scheduleMeasure);
-    ro.observe(root);
-    const scrollRoot = scrollRootRef?.current || findScrollParent(root);
-    scrollRoot?.addEventListener("scroll", scheduleMeasure, { passive: true });
-    window.addEventListener("resize", scheduleMeasure);
+    const unbind = bindLayoutMeasure(root, measure, { extraScrollRefs: extraScrollRefsRef.current });
+
     return () => {
-      cancelAnimationFrame(rafId);
       window.clearTimeout(t1);
       window.clearTimeout(t2);
-      ro.disconnect();
-      scrollRoot?.removeEventListener("scroll", scheduleMeasure);
-      window.removeEventListener("resize", scheduleMeasure);
+      unbind();
     };
-    // pairReady is stable via ref; reveal step / generating passed via deps
-  }, [rootRef, scrollRootRef, pairs, ...deps]);
+  }, [rootRef, pairs, ...deps]);
 
   return paths;
 }

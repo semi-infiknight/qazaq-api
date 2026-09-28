@@ -201,7 +201,8 @@ a {
   .intent-prompt,
   .intent-view-pane,
   .intent-reveal-item,
-  .intent-prompt.is-generating::after {
+  .intent-prompt.is-generating::after,
+  .intent-flows-edge {
     animation: none !important;
     transition: none !important;
     filter: none !important;
@@ -2780,6 +2781,9 @@ body.catalogue-loading-more .site-footer {
     padding: 1.1rem 1.15rem 1.65rem;
     min-height: 12rem;
     scrollbar-gutter: stable;
+    overscroll-behavior-x: contain;
+    scroll-behavior: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 

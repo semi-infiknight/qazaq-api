@@ -348,6 +348,7 @@ export default function KhazakArchFigure({ catalogueTotal = 723 }) {
       timers.forEach((id) => clearTimeout(id));
       observer?.disconnect();
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onResize);
       clearTimeout(resizeTimer);
       root.classList.remove("kz-af-on");
       resetVisual();
@@ -409,6 +410,7 @@ export default function KhazakArchFigure({ catalogueTotal = 723 }) {
     );
     observer.observe(root);
     window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", onResize, { passive: true });
     return cleanup;
   }, []);
 

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import FeatureApiCard from "./FeatureApiCard.jsx";
 import IntentViewToolbar from "./IntentViewToolbar.jsx";
 import PostmanFlowNode from "./PostmanFlowNode.jsx";
@@ -18,7 +18,7 @@ function FlowSvgEdges({ paths }) {
   if (!paths.length) return null;
 
   return (
-    <svg className="intent-flows-svg" aria-hidden="true">
+    <svg className="intent-flows-svg" aria-hidden="true" shapeRendering="geometricPrecision">
       {paths.map((path) => (
         <path
           key={path.id}
@@ -38,7 +38,12 @@ export default function IntentFlowsView({ suggestion, blocks }) {
   const spineRef = useRef(null);
   const startRef = useRef(null);
   const featureRefs = useRef([]);
-  const branchRefs = useRef([]);
+  const branchHeadRefs = useRef([]);
+
+  useEffect(() => {
+    featureRefs.current = [];
+    branchHeadRefs.current = [];
+  }, [blocks]);
 
   const edgePairs = useMemo(() => {
     const pairs = [];
@@ -65,7 +70,7 @@ export default function IntentFlowsView({ suggestion, blocks }) {
       }
       pairs.push({
         getFrom: () => featureRefs.current[index],
-        getTo: () => branchRefs.current[index],
+        getTo: () => branchHeadRefs.current[index],
         kind: "branch",
         tone: "api",
         fromSegment: `feature-${index}`,
@@ -83,7 +88,13 @@ export default function IntentFlowsView({ suggestion, blocks }) {
     return flowSegmentReady(r, pair.fromSegment) && flowSegmentReady(r, pair.toSegment);
   }, []);
 
-  const paths = useFlowEdgePaths(spineRef, edgePairs, [blocks.length, reveal?.step, reveal?.isGenerating], pairReady, stageRef);
+  const paths = useFlowEdgePaths(
+    spineRef,
+    edgePairs,
+    [blocks.length, reveal?.step, reveal?.isGenerating],
+    pairReady,
+    [stageRef],
+  );
 
   const productLabel = formatProductLabel(suggestion?.query);
 
@@ -137,13 +148,13 @@ export default function IntentFlowsView({ suggestion, blocks }) {
                   ].filter(Boolean)}
                 />
 
-                <div
-                  className="intent-flows-branch intent-flows-branch-panel"
-                  ref={(el) => {
-                    branchRefs.current[index] = el;
-                  }}
-                >
-                  <p className="intent-view-branch-kicker">
+                <div className="intent-flows-branch intent-flows-branch-panel">
+                  <p
+                    className="intent-view-branch-kicker"
+                    ref={(el) => {
+                      branchHeadRefs.current[index] = el;
+                    }}
+                  >
                     <span className="intent-view-branch-dot intent-view-branch-dot--success" />
                     API options
                   </p>

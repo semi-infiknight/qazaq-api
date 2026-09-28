@@ -292,7 +292,7 @@ export async function suggestApis(apis, query = "", { limit = 24 } = {}) {
     features: featureBlocks,
     intents: featureBlocks,
     apis: merged,
-    total: merged.length,
+    total: featureBlocks.reduce((n, b) => n + b.apis.length, 0),
   };
 }
 

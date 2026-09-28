@@ -6,7 +6,7 @@ export { featureBlocks, formatProductLabel };
 
 function IntentPromptHeader({ blocks, suggestion }) {
   const reveal = useIntentRevealState();
-  const apiTotal = suggestion.total ?? blocks.reduce((n, b) => n + b.apis.length, 0);
+  const apiTotal = blocks.reduce((n, b) => n + (b.apis?.length || 0), 0);
   const revealedFeatures = blocks.filter((_, index) => reveal?.isVisible(`feature-${index}`)).length;
   const revealedApis = blocks.reduce((count, block, blockIndex) => {
     if (!reveal) return count;

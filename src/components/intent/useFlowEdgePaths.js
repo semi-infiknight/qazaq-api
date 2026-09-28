@@ -48,7 +48,7 @@ function branchPath(from, to, stacked) {
   return `M ${from.x} ${from.y} C ${from.x} ${midY}, ${to.x} ${midY}, ${to.x} ${to.y}`;
 }
 
-export function useFlowEdgePaths(stageRef, pairs, deps = []) {
+export function useFlowEdgePaths(stageRef, pairs, deps = [], pairReady = () => true) {
   const [paths, setPaths] = useState([]);
 
   useLayoutEffect(() => {
@@ -59,7 +59,10 @@ export function useFlowEdgePaths(stageRef, pairs, deps = []) {
       const stacked = window.matchMedia(MOBILE_LAYOUT_QUERY).matches;
 
       const next = pairs
-        .map(({ getFrom, getTo, kind = "spine", tone = "feature" }, index) => {
+        .map((pair, index) => {
+          if (!pairReady(pair)) return null;
+
+          const { getFrom, getTo, kind = "spine", tone = "feature" } = pair;
           const fromEl = getFrom?.();
           const toEl = getTo?.();
           if (!fromEl || !toEl) return null;
@@ -94,13 +97,16 @@ export function useFlowEdgePaths(stageRef, pairs, deps = []) {
     };
 
     measure();
+    const afterReveal = window.setTimeout(measure, 780);
     const ro = new ResizeObserver(measure);
     ro.observe(stage);
     window.addEventListener("resize", measure);
     return () => {
+      window.clearTimeout(afterReveal);
       ro.disconnect();
       window.removeEventListener("resize", measure);
     };
+    // pairReady is stable; reveal step is passed via deps
   }, [stageRef, pairs, ...deps]);
 
   return paths;

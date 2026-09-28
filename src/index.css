@@ -2796,8 +2796,30 @@ body.catalogue-loading-more .site-footer {
   stroke-width: 2px;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.92;
-  transition: opacity var(--dur-2) var(--ease-smooth);
+  opacity: 0;
+  animation: intent-flows-edge-in var(--dur-2) var(--ease-enter) forwards;
+}
+
+@keyframes intent-flows-edge-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.92;
+  }
+}
+
+.intent-flows-edge--api {
+  animation-name: intent-flows-edge-in-api;
+}
+
+@keyframes intent-flows-edge-in-api {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.88;
+  }
 }
 
 .intent-flows-edge--start {
@@ -2812,7 +2834,6 @@ body.catalogue-loading-more .site-footer {
   stroke: color-mix(in srgb, var(--green) 68%, #fff);
   stroke-dasharray: 5 5;
   stroke-width: 1.75px;
-  opacity: 0.88;
 }
 
 .intent-flows-spine {

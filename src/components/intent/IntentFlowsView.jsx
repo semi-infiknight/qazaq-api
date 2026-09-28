@@ -1,11 +1,17 @@
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import FeatureApiCard from "./FeatureApiCard.jsx";
 import IntentViewToolbar from "./IntentViewToolbar.jsx";
 import PostmanFlowNode from "./PostmanFlowNode.jsx";
-import { IntentRevealItem, StreamingText } from "./intentReveal.jsx";
+import { IntentRevealItem, StreamingText, useIntentRevealState } from "./intentReveal.jsx";
 import { useFlowEdgePaths } from "./useFlowEdgePaths.js";
 import { formatProductLabel, intentViewMeta } from "./intentShared.js";
 import { useMobileLayout } from "../../hooks/useMediaQuery.js";
+
+function flowSegmentSettled(reveal, segmentId) {
+  if (!reveal) return true;
+  if (reveal.reducedMotion) return reveal.isVisible(segmentId);
+  return reveal.isVisible(segmentId) && !reveal.isActive(segmentId);
+}
 
 function FlowSvgEdges({ paths }) {
   if (!paths.length) return null;
@@ -26,6 +32,7 @@ function FlowSvgEdges({ paths }) {
 
 export default function IntentFlowsView({ suggestion, blocks }) {
   const isMobile = useMobileLayout();
+  const reveal = useIntentRevealState();
   const stageRef = useRef(null);
   const startRef = useRef(null);
   const featureRefs = useRef([]);
@@ -39,6 +46,8 @@ export default function IntentFlowsView({ suggestion, blocks }) {
         getTo: () => featureRefs.current[0],
         kind: "spine",
         tone: "start",
+        fromSegment: "intro",
+        toSegment: "feature-0",
       });
     }
     blocks.forEach((block, index) => {
@@ -48,6 +57,8 @@ export default function IntentFlowsView({ suggestion, blocks }) {
           getTo: () => featureRefs.current[index + 1],
           kind: "spine",
           tone: "feature",
+          fromSegment: `feature-${index}`,
+          toSegment: `feature-${index + 1}`,
         });
       }
       pairs.push({
@@ -55,12 +66,22 @@ export default function IntentFlowsView({ suggestion, blocks }) {
         getTo: () => branchRefs.current[index],
         kind: "branch",
         tone: "api",
+        fromSegment: `feature-${index}`,
+        toSegment: `feature-${index}`,
       });
     });
     return pairs;
   }, [blocks]);
 
-  const paths = useFlowEdgePaths(stageRef, edgePairs, [blocks.length]);
+  const revealRef = useRef(reveal);
+  revealRef.current = reveal;
+
+  const pairReady = useCallback((pair) => {
+    const r = revealRef.current;
+    return flowSegmentSettled(r, pair.fromSegment) && flowSegmentSettled(r, pair.toSegment);
+  }, []);
+
+  const paths = useFlowEdgePaths(stageRef, edgePairs, [blocks.length, reveal?.step], pairReady);
 
   const productLabel = formatProductLabel(suggestion?.query);
 

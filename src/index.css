@@ -75,6 +75,13 @@
   );
 }
 
+/* Nested scroll regions — avoid smooth-scroll jank with sticky bars and wide tables. */
+.scroll-region {
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 html,
 body,
 #root {
@@ -3475,6 +3482,9 @@ nav a:hover {
   padding: 0.85rem 1rem;
   border-bottom: 1px solid var(--line);
   background: color-mix(in srgb, var(--surface-alt) 50%, transparent);
+  position: sticky;
+  top: calc(var(--site-chrome-offset) + 0.15rem);
+  z-index: 6;
 }
 
 .api-suite-request-panel {
@@ -3483,6 +3493,9 @@ nav a:hover {
   overflow-y: auto;
   flex: 1 1 auto;
   min-height: 0;
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .api-suite-panes {
@@ -4000,6 +4013,9 @@ nav a:hover {
 
 .http-table-wrap {
   overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .http-table {
@@ -4582,6 +4598,9 @@ nav a:hover {
   max-height: 560px;
   overflow: auto;
   padding: 0.75rem 1.25rem 0;
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .http-body-wrap .response-raw code {
@@ -5621,6 +5640,9 @@ body.catalogue-mobile-sheet-open {
   flex: 1;
   overflow-y: auto;
   padding: 0.35rem 0;
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .service-nav-group + .service-nav-group {
@@ -5832,6 +5854,23 @@ body.catalogue-mobile-sheet-open {
 }
 
 @media (max-width: 860px) {
+  .http-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-behavior: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
+  }
+
+  .http-tab {
+    flex-shrink: 0;
+  }
+
+  .api-suite-request-bar {
+    top: 0;
+  }
+
   .service-hub-layout {
     grid-template-columns: 1fr;
   }
@@ -5843,6 +5882,12 @@ body.catalogue-mobile-sheet-open {
 
   .service-nav-groups {
     max-height: 320px;
+  }
+
+  body.catalogue-mobile-nav-active .service-hub-layout,
+  body.catalogue-mobile-nav-active .service-main.panel,
+  body.catalogue-mobile-nav-active .container-main.max-w-5xl {
+    scroll-margin-bottom: var(--catalogue-dock-offset);
   }
 }
 

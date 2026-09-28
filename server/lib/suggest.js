@@ -17,13 +17,19 @@ const THRESHOLDS = {
   tfidf: { apiMin: 0.16, noFit: 0.2, requireCapability: 0.24 },
 };
 
-/** Hard ceiling per feature block in the flow UI (not a target count). */
+/** Typical ~4 strong APIs per feature; allow 2–6 when scores support it (not a fixed slice). */
+const TARGET_APIS_PER_FEATURE = 4;
+const MIN_APIS_PER_FEATURE = 1;
 const MAX_APIS_PER_FEATURE = Math.min(
-  Math.max(Number(process.env.SUGGEST_MAX_APIS_PER_FEATURE) || 12, 1),
-  24,
+  Math.max(Number(process.env.SUGGEST_MAX_APIS_PER_FEATURE) || 6, MIN_APIS_PER_FEATURE),
+  8,
 );
-/** Stop adding APIs once scores fall below this fraction of the best match for the feature. */
-const API_SCORE_RELATIVE_FLOOR = 0.72;
+/** Within this band of the top match while filling toward TARGET. */
+const API_SCORE_RELATIVE_FLOOR = 0.88;
+/** Tighter bar for a 5th/6th card — must be nearly as strong as the best. */
+const API_SCORE_RELATIVE_FLOOR_TAIL = 0.94;
+/** Stop when the next API is a clear step down from the previous rank. */
+const API_SCORE_MAX_GAP = 0.065;
 
 let cachedIndex = null;
 let cachedApiCount = 0;
@@ -59,6 +65,43 @@ function enrichApi(api, feature, scores, userHay) {
           : `/apis/${api.slug || api.id}`),
     },
   };
+}
+
+function pickStrongApisForFeature(ranked, thresholds) {
+  if (!ranked.length) return [];
+
+  const best = ranked[0].final;
+  const selected = [];
+
+  for (const row of ranked) {
+    if (selected.length >= MAX_APIS_PER_FEATURE) break;
+
+    const relativeFloor =
+      selected.length >= TARGET_APIS_PER_FEATURE
+        ? API_SCORE_RELATIVE_FLOOR_TAIL
+        : API_SCORE_RELATIVE_FLOOR;
+    const minScore = Math.max(thresholds.apiMin, best * relativeFloor);
+
+    if (row.final < minScore) {
+      if (selected.length >= MIN_APIS_PER_FEATURE) break;
+      continue;
+    }
+
+    if (selected.length > 0) {
+      const prev = selected[selected.length - 1].final;
+      const gap = prev - row.final;
+      if (gap > API_SCORE_MAX_GAP) {
+        if (selected.length >= MIN_APIS_PER_FEATURE) break;
+      }
+      if (selected.length >= TARGET_APIS_PER_FEATURE && gap > API_SCORE_MAX_GAP * 0.75) {
+        break;
+      }
+    }
+
+    selected.push(row);
+  }
+
+  return selected;
 }
 
 function rankApiForFeature(api, semanticScore, feature, hay) {
@@ -126,14 +169,7 @@ async function matchApisForFeature(feature, apis, index, userQuery, hay, thresho
     (a, b) => b.final - a.final || b.semantic - a.semantic || a.api.title.localeCompare(b.api.title),
   );
 
-  const best = ranked[0]?.final ?? 0;
-  const scoreFloor = Math.max(thresholds.apiMin, best * API_SCORE_RELATIVE_FLOOR);
-  const selected = [];
-  for (const row of ranked) {
-    if (selected.length >= MAX_APIS_PER_FEATURE) break;
-    if (selected.length > 0 && row.final < scoreFloor) break;
-    selected.push(row);
-  }
+  const selected = pickStrongApisForFeature(ranked, thresholds);
 
   return selected.map((row) =>
     enrichApi(row.api, feature, { final: row.final, semantic: row.semantic, overlap: row.overlap }, hay),

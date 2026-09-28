@@ -12,16 +12,17 @@ const DEFAULT_TIMING = {
  * Pauses and resets when `active` is false.
  */
 export function useTypewriterCycle(lines, { active = true, timing = DEFAULT_TIMING } = {}) {
+  const safeLines = lines?.length ? lines : [""];
   const [text, setText] = useState("");
+  const [lineIndex, setLineIndex] = useState(0);
   const lineIndexRef = useRef(0);
   const charIndexRef = useRef(0);
   const phaseRef = useRef("typing");
 
   useEffect(() => {
-    const safeLines = lines?.length ? lines : [""];
-
     if (!active) {
       setText("");
+      setLineIndex(0);
       lineIndexRef.current = 0;
       charIndexRef.current = 0;
       phaseRef.current = "typing";
@@ -44,6 +45,8 @@ export function useTypewriterCycle(lines, { active = true, timing = DEFAULT_TIMI
       setText(safeLines[0] ?? "");
       timer = setInterval(() => {
         index = (index + 1) % safeLines.length;
+        lineIndexRef.current = index;
+        setLineIndex(index);
         setText(safeLines[index] ?? "");
       }, timing.pauseMs + timing.gapMs);
       return () => {
@@ -81,6 +84,7 @@ export function useTypewriterCycle(lines, { active = true, timing = DEFAULT_TIMI
       }
 
       lineIndexRef.current = (lineIndexRef.current + 1) % safeLines.length;
+      setLineIndex(lineIndexRef.current);
       phaseRef.current = "typing";
       schedule(timing.gapMs, tick);
     };
@@ -101,5 +105,7 @@ export function useTypewriterCycle(lines, { active = true, timing = DEFAULT_TIMI
     timing.typeMs,
   ]);
 
-  return { text };
+  const currentLine = safeLines[lineIndex % safeLines.length] ?? "";
+
+  return { text, currentLine };
 }

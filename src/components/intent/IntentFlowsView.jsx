@@ -1,9 +1,10 @@
 import { useMemo, useRef } from "react";
 import FeatureApiCard from "./FeatureApiCard.jsx";
+import IntentViewToolbar from "./IntentViewToolbar.jsx";
 import PostmanFlowNode from "./PostmanFlowNode.jsx";
 import { IntentRevealItem, StreamingText } from "./intentReveal.jsx";
 import { useFlowEdgePaths } from "./useFlowEdgePaths.js";
-import { formatProductLabel } from "./intentShared.js";
+import { formatProductLabel, intentViewMeta } from "./intentShared.js";
 import { useMobileLayout } from "../../hooks/useMediaQuery.js";
 
 function FlowSvgEdges({ paths }) {
@@ -62,21 +63,15 @@ export default function IntentFlowsView({ suggestion, blocks }) {
 
   const paths = useFlowEdgePaths(stageRef, edgePairs, [blocks.length]);
 
-  const apiCount = blocks.reduce((n, b) => n + b.apis.length, 0);
   const productLabel = formatProductLabel(suggestion?.query);
 
   return (
-    <div className="intent-flows">
+    <div className="intent-view intent-view--flows intent-flows">
       <IntentRevealItem segment="canvas">
-        <div className="intent-flows-toolbar">
-          <span className="intent-flows-toolbar-label">Flows canvas</span>
-          <span className="intent-flows-toolbar-meta">
-            {blocks.length} features · {apiCount} APIs
-          </span>
-        </div>
+        <IntentViewToolbar label="Flows" meta={intentViewMeta(blocks)} />
       </IntentRevealItem>
 
-      <div className="intent-flows-stage" ref={stageRef}>
+      <div className="intent-view-canvas intent-flows-stage" ref={stageRef}>
         <FlowSvgEdges paths={paths} />
 
         <div className={`intent-flows-spine${isMobile ? " intent-flows-spine--stacked" : ""}`}>
@@ -91,7 +86,7 @@ export default function IntentFlowsView({ suggestion, blocks }) {
                 showFailPort={false}
               />
               {suggestion.summary ? (
-                <StreamingText text={suggestion.summary} className="intent-flows-start-summary" />
+                <StreamingText text={suggestion.summary} className="intent-view-summary" />
               ) : null}
             </IntentRevealItem>
           </div>
@@ -123,8 +118,8 @@ export default function IntentFlowsView({ suggestion, blocks }) {
                     branchRefs.current[index] = el;
                   }}
                 >
-                  <p className="intent-flows-branch-kicker">
-                    <span className="intent-flows-branch-dot intent-flows-branch-dot--success" />
+                  <p className="intent-view-branch-kicker">
+                    <span className="intent-view-branch-dot intent-view-branch-dot--success" />
                     Success branch · pick an API
                   </p>
                   <div className="intent-prompt-api-grid intent-flows-api-grid">

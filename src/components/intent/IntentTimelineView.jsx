@@ -1,7 +1,8 @@
 import FeatureApiCard from "./FeatureApiCard.jsx";
+import IntentViewToolbar from "./IntentViewToolbar.jsx";
 import MermaidDiagram from "./MermaidDiagram.jsx";
 import { IntentRevealItem, StreamingText } from "./intentReveal.jsx";
-import { buildStackMermaid, formatProductLabel } from "./intentShared.js";
+import { buildStackMermaid, formatProductLabel, intentViewMeta } from "./intentShared.js";
 import { useMobileLayout } from "../../hooks/useMediaQuery.js";
 
 function FeatureStepTitle({ block }) {
@@ -41,11 +42,17 @@ export default function IntentTimelineView({ suggestion, blocks }) {
   const productLabel = formatProductLabel(suggestion?.query);
 
   return (
-    <>
+    <div className="intent-view intent-view--timeline">
+      <IntentRevealItem segment="canvas">
+        <IntentViewToolbar label="Timeline" meta={intentViewMeta(blocks)} />
+      </IntentRevealItem>
+
       <IntentRevealItem segment="diagram">
-        <section className="intent-prompt-diagram" aria-label="Architecture diagram">
-          <MermaidDiagram chart={chart} />
-        </section>
+        <div className="intent-view-canvas intent-view-canvas--diagram">
+          <section className="intent-prompt-diagram intent-prompt-diagram--inset" aria-label="Architecture diagram">
+            <MermaidDiagram chart={chart} />
+          </section>
+        </div>
       </IntentRevealItem>
 
       <ol className="intent-timeline-list">
@@ -55,10 +62,10 @@ export default function IntentTimelineView({ suggestion, blocks }) {
               <span className="intent-timeline-marker intent-timeline-marker--app">0</span>
               <span className="intent-timeline-line" />
             </div>
-            <div className="intent-timeline-panel">
-              <p className="intent-timeline-kicker">{productLabel}</p>
+            <div className="intent-timeline-panel intent-view-panel">
+              <p className="intent-view-panel-kicker">{productLabel}</p>
               {suggestion.summary ? (
-                <StreamingText text={suggestion.summary} className="intent-timeline-summary" />
+                <StreamingText text={suggestion.summary} className="intent-view-summary" />
               ) : null}
             </div>
           </IntentRevealItem>
@@ -71,7 +78,7 @@ export default function IntentTimelineView({ suggestion, blocks }) {
                 <span className="intent-timeline-marker">{index + 1}</span>
                 {index < blocks.length - 1 ? <span className="intent-timeline-line" /> : null}
               </div>
-              <div className="intent-timeline-panel intent-timeline-panel--feature">
+              <div className="intent-timeline-panel intent-timeline-panel--feature intent-view-panel">
                 <FeatureStepTitle block={block} />
                 <FeatureStepMeta block={block} />
                 <div className="intent-prompt-api-grid">
@@ -90,6 +97,6 @@ export default function IntentTimelineView({ suggestion, blocks }) {
           </li>
         ))}
       </ol>
-    </>
+    </div>
   );
 }

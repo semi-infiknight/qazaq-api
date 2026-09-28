@@ -27,6 +27,8 @@ export default function HomePage() {
   const [apis, setApis] = useState([]);
   const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
+  const [suggestError, setSuggestError] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false);
   const [staggerFrom, setStaggerFrom] = useState(0);
   const loadMoreRef = useRef(null);
@@ -40,24 +42,27 @@ export default function HomePage() {
     setGeneratingStack(false);
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
+  const loadCatalogue = useCallback(() => {
     setLoading(true);
-    fetchSearch({ q: "", limit: PAGE_SIZE, offset: 0 })
+    setLoadError(null);
+    return fetchSearch({ q: "", limit: PAGE_SIZE, offset: 0 })
       .then((res) => {
-        if (cancelled) return;
         nextOffsetRef.current = res.next_offset;
         setApis(res.apis);
         setMeta(res);
       })
-      .catch(console.error)
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
+      .catch((err) => {
+        console.error(err);
+        setLoadError(err.message || "Could not load the catalogue.");
+        setApis([]);
+        setMeta(null);
+      })
+      .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    loadCatalogue();
+  }, [loadCatalogue]);
 
   const loadMore = useCallback(async () => {
     const offset = nextOffsetRef.current;
@@ -115,6 +120,7 @@ export default function HomePage() {
     setSubmittedQuery(q);
     setSuggesting(true);
     setSuggestion(null);
+    setSuggestError(null);
     setGeneratingStack(false);
 
     fetchSuggest(q)
@@ -124,14 +130,18 @@ export default function HomePage() {
           document.getElementById("intent-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
         });
       })
-      .catch(console.error)
+      .catch((err) => {
+        console.error(err);
+        setSuggestError(err.message || "Could not generate API suggestions. Try again.");
+        setSuggestion(null);
+      })
       .finally(() => setSuggesting(false));
   }, [query, submittedQuery, suggestion, suggesting, clearIntent]);
 
   const showingIntent = Boolean(submittedQuery.trim());
   const hasMore = Boolean(meta?.next_offset);
   // Hero caption: KZ-filtered baseline only. Legacy servers returned unfiltered total (1407).
-  const catalogueTotal = meta?.catalogueTotal ?? 688;
+  const catalogueTotal = meta?.catalogueTotal ?? 723;
   const resultsTotal = meta?.total ?? catalogueTotal;
   const contentKey = showingIntent ? "intent" : loading ? "loading" : "grid";
 
@@ -193,7 +203,24 @@ export default function HomePage() {
 
           {showingIntent ? (
             <div id="intent-results" className="catalogue-content-enter" key={contentKey}>
-              {suggesting && !suggestion ? (
+              {suggestError ? (
+                <div className="panel catalogue-error-panel">
+                  <p className="catalogue-error-text">{suggestError}</p>
+                  <button
+                    type="button"
+                    className="catalogue-load-btn"
+                    onClick={() => {
+                      setSuggestError(null);
+                      submitIntent();
+                    }}
+                  >
+                    Retry
+                  </button>
+                  <button type="button" className="http-btn-ghost catalogue-error-clear" onClick={clearIntent}>
+                    Clear search
+                  </button>
+                </div>
+              ) : suggesting && !suggestion ? (
                 <div className="catalogue-loader-wrap">
                   <DotMatrixLoader size={120} dotSize={9} label="Finding APIs…" />
                 </div>
@@ -204,6 +231,13 @@ export default function HomePage() {
           ) : loading ? (
             <div className="catalogue-loader-wrap" key={contentKey}>
               <DotMatrixLoader size={132} dotSize={10} label="Loading catalogue…" />
+            </div>
+          ) : loadError ? (
+            <div className="panel catalogue-error-panel catalogue-content-enter" key={contentKey}>
+              <p className="catalogue-error-text">{loadError}</p>
+              <button type="button" className="catalogue-load-btn" onClick={loadCatalogue}>
+                Retry loading catalogue
+              </button>
             </div>
           ) : (
             <div className="catalogue-content-enter" key={contentKey}>

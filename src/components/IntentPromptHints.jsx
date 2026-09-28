@@ -1,6 +1,4 @@
-// Unused: example prompt cards removed from homepage; the typewriter ghost text
-// in the prompt box is enough to signal what the product is for.
-// Kept for reference if we want to restore the grid later.
+// Unused: example prompt cards removed from homepage; prompts cycle as ghost text in IntentInputBar (Tab to accept).
 /*
 export default function IntentPromptHints({ hints, onSelect }) {
   return (

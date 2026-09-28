@@ -1,20 +1,26 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { useLocation } from "react-router-dom";
 import IntentInputBar from "./IntentInputBar.jsx";
+import { INTENT_PROMPT_LINES } from "../data/intentPromptHints.js";
 import { useCatalogueNav } from "../context/CatalogueNavContext.jsx";
 
 export default function MobileBottomNav() {
+  const { pathname } = useLocation();
+  const onHome = pathname === "/";
   const { catalogue } = useCatalogueNav();
   const searchInputRef = useRef(null);
 
   useEffect(() => {
+    if (!onHome) return undefined;
     document.body.classList.add("catalogue-mobile-nav-active");
     return () => {
       document.body.classList.remove("catalogue-mobile-nav-active");
     };
-  }, []);
+  }, [onHome]);
 
   useEffect(() => {
+    if (!onHome) return undefined;
     const viewport = window.visualViewport;
     if (!viewport) return undefined;
 
@@ -43,7 +49,9 @@ export default function MobileBottomNav() {
       document.documentElement.style.removeProperty("--browser-ui-offset");
       document.documentElement.style.removeProperty("--viewport-offset-top");
     };
-  }, []);
+  }, [onHome]);
+
+  if (!onHome) return null;
 
   const nav = (
     <div className="catalogue-mobile-nav" aria-hidden={false}>
@@ -57,6 +65,7 @@ export default function MobileBottomNav() {
               onChange={(next) => catalogue?.onQueryChange?.(next)}
               onSubmit={() => catalogue?.onIntentSubmit?.()}
               submitting={catalogue?.intentSubmitting}
+              hintLines={INTENT_PROMPT_LINES}
               placeholder="Describe the Kazakhstan app you want to build…"
             />
           </div>

@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import FeatureApiCard from "./FeatureApiCard.jsx";
+import IntentViewToolbar from "./IntentViewToolbar.jsx";
 import { IntentRevealItem, StreamingText } from "./intentReveal.jsx";
-import { formatProductLabel } from "./intentShared.js";
+import { formatProductLabel, intentViewMeta } from "./intentShared.js";
 
 function ZapierConnector() {
   return (
@@ -112,17 +113,12 @@ export default function IntentZapierView({ suggestion, blocks }) {
   const pathStepBase = 4;
 
   return (
-    <div className="intent-zapier">
+    <div className="intent-view intent-view--stack intent-zapier">
       <IntentRevealItem segment="canvas">
-        <div className="intent-zapier-toolbar">
-          <span className="intent-zapier-toolbar-label">Visual flow</span>
-          <span className="intent-zapier-toolbar-meta">
-            {blocks.length} paths · {blocks.reduce((n, b) => n + b.apis.length, 0)} APIs
-          </span>
-        </div>
+        <IntentViewToolbar label="Stack" meta={intentViewMeta(blocks)} />
       </IntentRevealItem>
 
-      <div className="intent-zapier-chart" aria-label="Structured integration flowchart">
+      <div className="intent-view-canvas intent-zapier-chart" aria-label="Structured integration flowchart">
         <div className="intent-zapier-trunk">
           <IntentRevealItem segment="trunk-1">
             <ZapierStepCard

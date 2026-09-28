@@ -3446,7 +3446,6 @@ nav a:hover {
   --http-amber: #e0b86b;
   --http-red: #d97a7a;
 
-  /* overflow: visible so the Send bar can stick while the subpage scrolls */
   padding: 0;
   margin-top: 1.5rem;
   border: 1px solid var(--line);
@@ -3476,10 +3475,6 @@ nav a:hover {
   padding: 0.85rem 1rem;
   border-bottom: 1px solid var(--line);
   background: color-mix(in srgb, var(--surface-alt) 92%, var(--surface));
-  position: sticky;
-  top: calc(var(--site-chrome-offset) + 0.15rem);
-  z-index: 6;
-  box-shadow: 0 1px 0 var(--line);
 }
 
 .api-suite-request-panel {

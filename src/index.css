@@ -26,6 +26,8 @@
   --logo-shadow: rgba(0, 0, 0, 0.45);
   --logo-ink: #f2f2f2;
   --kz-cyan: 174 72% 52%;
+  --kz-teal: 174 58% 28%;
+  --kz-amber: 38 92% 58%;
   --kz-ink-dim: 210 12% 72%;
   --site-chrome-inset-top: max(0.75rem, env(safe-area-inset-top, 0px));
   --site-chrome-logo-height: clamp(55px, 7.8vw, 73px);
@@ -238,106 +240,124 @@ a {
   animation: content-enter var(--dur-2) var(--ease-enter) both;
 }
 
-/* Gate Shift — circular dot-matrix loader */
-.dotm-loader {
+/* Catalogue loader — SVG stroke arc + stack layers */
+.qz-loader {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
-.dotm-ring {
+.qz-loader-visual {
   position: relative;
-  width: var(--dotm-size);
-  height: var(--dotm-size);
+  width: var(--qz-size);
+  height: var(--qz-size);
 }
 
-.dotm-dot {
+.qz-loader-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 50%;
+  animation: qz-loader-spin 2.8s linear infinite;
+}
+
+.qz-loader-track,
+.qz-loader-arc {
+  fill: none;
+  stroke-width: 2.25;
+  vector-effect: non-scaling-stroke;
+}
+
+.qz-loader-track {
+  stroke: hsl(var(--kz-teal) / 0.22);
+}
+
+.qz-loader-arc {
+  stroke: hsl(var(--kz-cyan));
+  stroke-linecap: round;
+  stroke-dasharray: 52 212;
+  stroke-dashoffset: 0;
+  animation: qz-loader-dash 1.35s var(--ease-smooth) infinite;
+  filter: drop-shadow(0 0 4px hsl(var(--kz-cyan) / 0.35));
+}
+
+@keyframes qz-loader-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes qz-loader-dash {
+  0% { stroke-dashoffset: 0; opacity: 0.55; }
+  50% { stroke-dashoffset: -132; opacity: 1; }
+  100% { stroke-dashoffset: -264; opacity: 0.55; }
+}
+
+.qz-loader-core {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: var(--dotm-dot);
-  height: var(--dotm-dot);
-  margin: calc(var(--dotm-dot) / -2) 0 0 calc(var(--dotm-dot) / -2);
-  border-radius: 50%;
-  background: hsl(var(--kz-cyan) / 0.85);
-  box-shadow: 0 0 6px hsl(var(--kz-cyan) / 0.45);
-  animation: dotm-pulse 1.6s var(--ease-smooth) infinite;
-}
-
-@keyframes dotm-pulse {
-  0%, 100% { opacity: 0.18; transform: translate(var(--tx, 0), var(--ty, 0)) scale(0.7); }
-  50% { opacity: 1; transform: translate(var(--tx, 0), var(--ty, 0)) scale(1); }
-}
-
-.dotm-gate {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: var(--dotm-size);
-  height: var(--dotm-size);
-  margin: calc(var(--dotm-size) / -2) 0 0 calc(var(--dotm-size) / -2);
-  border-radius: 50%;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.38rem;
+  padding: 0 28%;
   pointer-events: none;
 }
 
-.dotm-gate-v {
+.qz-loader-layer {
+  display: block;
+  height: 3px;
+  border-radius: 999px;
+  transform-origin: left center;
   background: linear-gradient(
     90deg,
-    transparent 0%,
-    transparent 42%,
-    hsl(var(--kz-cyan) / 0.35) 50%,
-    transparent 58%,
-    transparent 100%
+    hsl(var(--kz-teal) / 0.15) 0%,
+    hsl(var(--kz-cyan) / 0.95) 42%,
+    hsl(var(--kz-amber) / 0.85) 100%
   );
-  mix-blend-mode: screen;
-  animation: dotm-sweep-v 2.4s var(--ease-smooth) infinite;
+  opacity: 0.35;
+  animation: qz-loader-layer 1.35s var(--ease-smooth) infinite;
+  animation-delay: calc(var(--qz-i, 0) * 0.14s);
 }
 
-.dotm-gate-h {
-  background: linear-gradient(
-    0deg,
-    transparent 0%,
-    transparent 42%,
-    hsl(var(--kz-cyan) / 0.35) 50%,
-    transparent 58%,
-    transparent 100%
-  );
-  mix-blend-mode: screen;
-  animation: dotm-sweep-h 2.4s var(--ease-smooth) infinite;
-  animation-delay: 1.2s;
+.qz-loader-layer:nth-child(1) { width: 88%; }
+.qz-loader-layer:nth-child(2) { width: 72%; }
+.qz-loader-layer:nth-child(3) { width: 56%; }
+
+@keyframes qz-loader-layer {
+  0%, 100% {
+    opacity: 0.28;
+    transform: scaleX(0.72);
+  }
+  45% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
 }
 
-@keyframes dotm-sweep-v {
-  0% { transform: translateX(-30%); opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { transform: translateX(30%); opacity: 0; }
-}
-
-@keyframes dotm-sweep-h {
-  0% { transform: translateY(-30%); opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { transform: translateY(30%); opacity: 0; }
-}
-
-.dotm-label {
+.qz-loader-label {
+  margin: 0;
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--text-soft);
-  letter-spacing: 0.04em;
-  animation: pulse-soft 2s var(--ease-smooth) infinite;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dotm-dot,
-  .dotm-gate-v,
-  .dotm-gate-h,
-  .dotm-label {
+  .qz-loader-svg,
+  .qz-loader-arc,
+  .qz-loader-layer {
     animation: none;
   }
-  .dotm-dot { opacity: 0.55; }
+  .qz-loader-arc {
+    stroke-dashoffset: -66;
+    opacity: 0.85;
+  }
+  .qz-loader-layer {
+    opacity: 0.7;
+    transform: scaleX(1);
+  }
 }
 
 /* Skeleton cards */

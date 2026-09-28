@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchSearch, fetchSuggest } from "../lib/api.js";
 import ApiGrid, { SKELETON_COUNT } from "../components/ApiGrid.jsx";
-import DotMatrixLoader from "../components/DotMatrixLoader.jsx";
+import CatalogueLoader from "../components/CatalogueLoader.jsx";
 import { IntentResults } from "../components/IntentSuggest.jsx";
 import IntentInputBar from "../components/IntentInputBar.jsx";
 import KhazakArchFigure from "../components/KhazakArchFigure.jsx";
@@ -222,7 +222,7 @@ export default function HomePage() {
                 </div>
               ) : suggesting && !suggestion ? (
                 <div className="catalogue-loader-wrap">
-                  <DotMatrixLoader size={120} dotSize={9} label="Finding APIs…" />
+                  <CatalogueLoader size={96} label="Finding APIs…" />
                 </div>
               ) : (
                 <IntentResults suggestion={suggestion} onGeneratingChange={setGeneratingStack} />
@@ -230,7 +230,7 @@ export default function HomePage() {
             </div>
           ) : loading ? (
             <div className="catalogue-loader-wrap" key={contentKey}>
-              <DotMatrixLoader size={132} dotSize={10} label="Loading catalogue…" />
+              <CatalogueLoader size={104} label="Loading catalogue…" />
             </div>
           ) : loadError ? (
             <div className="panel catalogue-error-panel catalogue-content-enter" key={contentKey}>

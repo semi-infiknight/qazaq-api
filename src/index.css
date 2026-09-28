@@ -3446,7 +3446,7 @@ nav a:hover {
   --http-amber: #e0b86b;
   --http-red: #d97a7a;
 
-  overflow: hidden;
+  /* overflow: visible so the Send bar can stick while the subpage scrolls */
   padding: 0;
   margin-top: 1.5rem;
   border: 1px solid var(--line);
@@ -3470,14 +3470,16 @@ nav a:hover {
 
 .api-suite-request-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
   padding: 0.85rem 1rem;
   border-bottom: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface-alt) 50%, transparent);
+  background: color-mix(in srgb, var(--surface-alt) 92%, var(--surface));
   position: sticky;
   top: calc(var(--site-chrome-offset) + 0.15rem);
   z-index: 6;
+  box-shadow: 0 1px 0 var(--line);
 }
 
 .api-suite-request-panel {
@@ -3493,6 +3495,8 @@ nav a:hover {
   grid-template-rows: minmax(220px, 1fr) minmax(280px, 1.2fr);
   min-height: 560px;
   border-top: 1px solid var(--line);
+  overflow: hidden;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
 .api-suite-pane {
@@ -5835,17 +5839,23 @@ body.catalogue-mobile-sheet-open {
 }
 
 @media (max-width: 860px) {
-  .http-tabs {
+  .api-suite .http-tabs {
     flex-wrap: nowrap;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .http-tab {
+  .api-suite .http-tab {
     flex-shrink: 0;
   }
 
   .api-suite-request-bar {
-    top: 0;
+    top: calc(var(--site-chrome-offset) + 0.05rem);
+  }
+
+  .api-suite-request-bar .http-url-input {
+    flex: 1 1 100%;
+    min-width: 0;
   }
 
   .service-hub-layout {

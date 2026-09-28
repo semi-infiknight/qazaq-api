@@ -49,6 +49,14 @@ export function featureBlocks(suggestion) {
   return suggestion?.features?.length ? suggestion.features : suggestion?.intents || [];
 }
 
+export function intentViewMeta(blocks) {
+  const featureCount = blocks.length;
+  const apiCount = blocks.reduce((n, b) => n + (b.apis?.length || 0), 0);
+  const features = `${featureCount} feature${featureCount === 1 ? "" : "s"}`;
+  const apis = `${apiCount} API${apiCount === 1 ? "" : "s"}`;
+  return `${features} · ${apis}`;
+}
+
 /** Build a stack flowchart from matched features (TB on mobile, LR on desktop). */
 export function buildStackMermaid(suggestion, { direction = "LR" } = {}) {
   const blocks = featureBlocks(suggestion);
@@ -58,9 +66,9 @@ export function buildStackMermaid(suggestion, { direction = "LR" } = {}) {
   const lines = [
     flow,
     `  App["${escapeMermaidLabel(formatProductLabel(suggestion?.query))}"]`,
-    "  classDef app fill:#171717,stroke:#a0a0a0,color:#f0f0f0,stroke-width:1.5px",
-    "  classDef layer fill:#111111,stroke:#6b6b6b,color:#e0e0e0,stroke-width:1px",
-    "  classDef api fill:#0a0a0a,stroke:#4a4a4a,color:#d0d0d0,stroke-width:1px",
+    "  classDef app fill:#1a1025,stroke:#c76a3a,color:#f0ebe3,stroke-width:1.5px",
+    "  classDef layer fill:#141018,stroke:#8a5c40,color:#e8dfd6,stroke-width:1px",
+    "  classDef api fill:#0d0a10,stroke:#4a3d38,color:#d0c8c0,stroke-width:1px",
     "  class App app",
   ];
 

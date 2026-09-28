@@ -2419,14 +2419,6 @@ body.catalogue-loading-more .site-footer {
   }
 }
 
-.intent-flows-start-summary {
-  margin: 0.65rem 0 0;
-  max-width: 18rem;
-  font-size: 0.82rem;
-  line-height: 1.45;
-  color: var(--text-soft);
-}
-
 .intent-prompt-role {
   font-family: var(--font-mono);
   font-size: var(--fs-2xs);
@@ -2621,6 +2613,105 @@ body.catalogue-loading-more .site-footer {
   background: color-mix(in srgb, var(--accent) 14%, var(--surface-alt));
 }
 
+/* Shared intent views: Timeline, Flows, Stack */
+.intent-view {
+  margin-top: 0.75rem;
+}
+
+.intent-view-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.intent-view-toolbar-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.intent-view-toolbar-meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  color: var(--text-mute);
+}
+
+.intent-view-canvas {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--line) 42%, transparent) 1px, transparent 0)
+      0 0 / 20px 20px,
+    color-mix(in srgb, var(--code-bg) 90%, #000);
+}
+
+.intent-view-canvas--diagram {
+  padding: 0.75rem 0.65rem 0.85rem;
+  margin-bottom: 0.15rem;
+}
+
+.intent-prompt-diagram--inset {
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.intent-view-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-alt) 70%, transparent);
+  padding: 0.85rem 0.95rem;
+}
+
+.intent-view-panel-kicker {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.intent-view-summary {
+  margin: 0.45rem 0 0;
+  max-width: 22rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--text-soft);
+  overflow-wrap: anywhere;
+}
+
+.intent-view-branch-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+
+.intent-view-branch-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.intent-view-branch-dot--success {
+  background: var(--green);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 20%, transparent);
+}
+
 /* Timeline numbered steps (shadcn-inspired) */
 .intent-timeline-list {
   list-style: none;
@@ -2660,9 +2751,13 @@ body.catalogue-loading-more .site-footer {
 }
 
 .intent-timeline-marker--app {
-  background: linear-gradient(135deg, #6b6b6b, #808080);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 55%, #1a1025),
+    color-mix(in srgb, var(--accent) 35%, #2a1a12)
+  );
   color: #fff;
-  border-color: transparent;
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 .intent-timeline-line {
@@ -2677,47 +2772,15 @@ body.catalogue-loading-more .site-footer {
   );
 }
 
-.intent-timeline-panel {
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--surface-alt) 70%, transparent);
-  padding: 0.85rem 0.95rem;
-}
-
 .intent-timeline-panel--feature {
   background: color-mix(in srgb, var(--surface) 92%, #0a0a0a);
 }
 
-.intent-timeline-kicker,
 .intent-timeline-step-title {
   margin: 0 0 0.35rem;
-  font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.intent-timeline-step-title {
   color: var(--text);
   font-size: 0.95rem;
   letter-spacing: 0.04em;
-  text-transform: none;
-}
-
-.intent-timeline-query {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.45;
-  color: var(--text);
-  overflow-wrap: anywhere;
-}
-
-.intent-timeline-summary {
-  margin: 0.45rem 0 0;
-  color: var(--text-soft);
-  font-size: 0.92rem;
-  line-height: 1.45;
 }
 
 .intent-timeline-panel .intent-prompt-api-grid {
@@ -2725,51 +2788,10 @@ body.catalogue-loading-more .site-footer {
 }
 
 /* Postman Flows canvas */
-.intent-flows,
-.intent-zapier {
-  margin-top: 0.35rem;
-}
-
-.intent-flows-toolbar,
-.intent-zapier-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.intent-flows-toolbar-label,
-.intent-zapier-toolbar-label {
-  font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, #ff6c37 75%, var(--accent));
-}
-
-.intent-zapier-toolbar-label {
-  color: color-mix(in srgb, #ff8f66 70%, var(--accent));
-}
-
-.intent-flows-toolbar-meta,
-.intent-zapier-toolbar-meta {
-  font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
-  color: var(--text-mute);
-}
-
 .intent-flows-stage {
   position: relative;
   overflow: visible;
   padding: 0.85rem 0.65rem 1.1rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  background:
-    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--line) 45%, transparent) 1px, transparent 0)
-      0 0 / 20px 20px,
-    color-mix(in srgb, var(--code-bg) 92%, #000);
 }
 
 @media (min-width: 861px) {
@@ -2798,7 +2820,7 @@ body.catalogue-loading-more .site-footer {
 }
 
 .intent-flows-edge--feature {
-  stroke: color-mix(in srgb, #ff6c37 75%, #fff);
+  stroke: color-mix(in srgb, var(--accent) 75%, #fff);
 }
 
 .intent-flows-edge--api {
@@ -2855,9 +2877,9 @@ body.catalogue-loading-more .site-footer {
   grid-template-rows: auto 1fr auto;
   min-height: 8.5rem;
   border: 1px solid var(--line);
-  border-radius: 0.65rem;
+  border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--surface) 92%, #0a0a0a);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
   overflow: hidden;
 }
 
@@ -2883,16 +2905,16 @@ body.catalogue-loading-more .site-footer {
 .intent-flows-node--start .intent-flows-node-head {
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, #6b6b6b 35%, var(--surface)),
-    color-mix(in srgb, #a0a0a0 18%, var(--surface))
+    color-mix(in srgb, var(--accent) 32%, var(--surface)),
+    color-mix(in srgb, var(--accent) 14%, var(--surface))
   );
 }
 
 .intent-flows-node--feature .intent-flows-node-head {
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, #ff6c37 28%, var(--surface)),
-    color-mix(in srgb, #ff6c37 10%, var(--surface))
+    color-mix(in srgb, var(--accent) 26%, var(--surface)),
+    color-mix(in srgb, var(--accent) 10%, var(--surface))
   );
 }
 
@@ -2993,7 +3015,7 @@ body.catalogue-loading-more .site-footer {
   justify-content: center;
 }
 
-.intent-flows-spine--stacked .intent-flows-branch-kicker {
+.intent-flows-spine--stacked .intent-view-branch-kicker {
   justify-content: center;
   text-align: center;
   flex-wrap: wrap;
@@ -3041,29 +3063,6 @@ body.catalogue-loading-more .site-footer {
   padding-top: 0.15rem;
 }
 
-.intent-flows-branch-kicker {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-mute);
-}
-
-.intent-flows-branch-dot {
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 999px;
-}
-
-.intent-flows-branch-dot--success {
-  background: var(--green);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 20%, transparent);
-}
-
 .intent-flows-api-grid {
   grid-template-columns: 1fr;
 }
@@ -3071,12 +3070,6 @@ body.catalogue-loading-more .site-footer {
 /* Zapier-style structured flowchart */
 .intent-zapier-chart {
   padding: 1.25rem 0.85rem 1.5rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  background:
-    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--line) 40%, transparent) 1px, transparent 0)
-      0 0 / 22px 22px,
-    color-mix(in srgb, var(--surface-alt) 88%, #000);
 }
 
 .intent-zapier-trunk {
@@ -3094,7 +3087,7 @@ body.catalogue-loading-more .site-footer {
   gap: 0.55rem;
   width: min(100%, 28rem);
   border: 1px solid var(--line);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--surface) 94%, #0a0a0a);
   color: var(--text);
   padding: 0.7rem 0.85rem;
@@ -3108,20 +3101,20 @@ body.catalogue-loading-more .site-footer {
 }
 
 .intent-zapier-step--trigger {
-  border-color: color-mix(in srgb, #ff8f66 35%, var(--line));
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
 }
 
 .intent-zapier-step--paths,
 .intent-zapier-step--dark {
   background: color-mix(in srgb, #171717 55%, var(--surface));
-  border-color: color-mix(in srgb, #ff8f66 28%, var(--line));
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
 }
 
 .intent-zapier-step-active,
 .intent-zapier-step:hover {
-  border-color: color-mix(in srgb, #ff8f66 55%, var(--line));
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
   box-shadow:
-    0 0 0 3px color-mix(in srgb, #ff8f66 12%, transparent),
+    0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent),
     0 10px 24px rgba(0, 0, 0, 0.24);
 }
 
@@ -3143,7 +3136,7 @@ body.catalogue-loading-more .site-footer {
   width: 1.85rem;
   height: 1.85rem;
   border-radius: 0.45rem;
-  background: color-mix(in srgb, #ff8f66 14%, var(--surface-alt));
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface-alt));
   font-size: 0.85rem;
 }
 
@@ -3171,12 +3164,12 @@ body.catalogue-loading-more .site-footer {
   align-items: center;
   padding: 0.12rem 0.4rem;
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, #ff8f66 18%, var(--surface-alt));
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface-alt));
   font-family: var(--font-mono);
   font-size: 0.58rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: color-mix(in srgb, #ffb08a 80%, var(--text));
+  color: color-mix(in srgb, var(--accent) 65%, var(--text));
 }
 
 .intent-zapier-step-meta {
@@ -3206,9 +3199,9 @@ body.catalogue-loading-more .site-footer {
   width: 1.35rem;
   height: 1.35rem;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, #ff8f66 35%, var(--line));
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
   background: color-mix(in srgb, var(--surface) 92%, #0a0a0a);
-  color: color-mix(in srgb, #ff8f66 80%, var(--text));
+  color: color-mix(in srgb, var(--accent) 80%, var(--text));
   font-size: 0.85rem;
   line-height: 1;
 }
@@ -3256,12 +3249,12 @@ body.catalogue-loading-more .site-footer {
   padding: 0.2rem 0.55rem;
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--surface) 90%, #000);
-  border: 1px solid var(--line);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
   font-family: var(--font-mono);
   font-size: var(--fs-2xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--text-soft);
+  color: color-mix(in srgb, var(--accent) 55%, var(--text-soft));
 }
 
 .intent-zapier-path-note {

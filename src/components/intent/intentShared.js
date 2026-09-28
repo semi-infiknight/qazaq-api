@@ -91,19 +91,9 @@ export function buildStackMermaid(suggestion, { direction = "LR" } = {}) {
   return lines.join("\n");
 }
 
-export const INTENT_VIEW_MODES = [
-  { id: "timeline", label: "Timeline", hint: "Diagram + numbered steps" },
-  { id: "flows", label: "Flows", hint: "Postman-style canvas" },
-  { id: "stack", label: "Stack", hint: "Zapier-style flow" },
-];
-
-export const INTENT_VIEW_STORAGE_KEY = "khazak-intent-view";
-
-export function readStoredIntentView() {
-  if (typeof window === "undefined") return "timeline";
-  const stored = window.localStorage.getItem(INTENT_VIEW_STORAGE_KEY);
-  return INTENT_VIEW_MODES.some((m) => m.id === stored) ? stored : "timeline";
-}
+// Timeline / Stack views removed — Flows-only intent results.
+// export const INTENT_VIEW_MODES = [...];
+// export const INTENT_VIEW_STORAGE_KEY = "khazak-intent-view";
 
 export function apiHref(api) {
   return (

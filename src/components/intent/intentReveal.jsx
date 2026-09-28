@@ -3,18 +3,8 @@ import { defaultIntentStepDelay, useIntentReveal } from "../../hooks/useIntentRe
 
 const IntentRevealContext = createContext(null);
 
-export function buildIntentRevealSegments(blocks, view = "timeline") {
-  const segments = [];
-
-  if (view === "timeline") {
-    segments.push("canvas", "diagram", "intro");
-  } else if (view === "flows") {
-    segments.push("canvas", "intro");
-  } else if (view === "stack") {
-    segments.push("canvas", "trunk-1", "trunk-2", "trunk-3");
-  } else {
-    segments.push("intro");
-  }
+export function buildIntentRevealSegments(blocks) {
+  const segments = ["canvas", "intro"];
 
   blocks.forEach((block, blockIndex) => {
     segments.push(`feature-${blockIndex}`);
@@ -38,8 +28,8 @@ function buildStepDelay(summary) {
   };
 }
 
-export function IntentRevealProvider({ blocks, view, summary = "", onGeneratingChange, children }) {
-  const segments = useMemo(() => buildIntentRevealSegments(blocks, view), [blocks, view]);
+export function IntentRevealProvider({ blocks, summary = "", onGeneratingChange, children }) {
+  const segments = useMemo(() => buildIntentRevealSegments(blocks), [blocks]);
   const getStepDelay = useMemo(() => buildStepDelay(summary), [summary]);
   // Only re-trigger the generation animation when the blocks change (new query),
   // not when the view/tab changes.

@@ -23,7 +23,20 @@ function CopyButton({ text, label = "Copy" }) {
 }
 
 export function OverviewPanel({ api, spec, previewUrl, headers, apiKey }) {
-  const description = api.note || api.description || "";
+  const description =
+    api.note ||
+    api.description ||
+    api.setup?.summary ||
+    api.trust?.label ||
+    "";
+  const catalogueLine = [
+    api.provider,
+    api.category,
+    api.companyName && api.companyName !== api.provider ? api.companyName : null,
+    api.source,
+  ]
+    .filter(Boolean)
+    .join(" · ");
   const snippets = useMemo(() => {
     const map = {};
     if (api.curl) map.curl = api.curl;
@@ -85,6 +98,10 @@ export function OverviewPanel({ api, spec, previewUrl, headers, apiKey }) {
         </code>
       </div>
 
+      {catalogueLine && (
+        <p className="http-overview-catalogue-line">{catalogueLine}</p>
+      )}
+
       {/* Description */}
       {description && (
         <div className="http-overview-section">
@@ -97,11 +114,69 @@ export function OverviewPanel({ api, spec, previewUrl, headers, apiKey }) {
         {api.tier && <span className="http-overview-chip">{api.tier}</span>}
         {api.pricing && <span className="http-overview-chip">{api.pricing}</span>}
         {api.auth && <span className="http-overview-chip">{api.auth}</span>}
+        {api.coverage && <span className="http-overview-chip">{api.coverage}</span>}
+        {api.freshness?.label && <span className="http-overview-chip">{api.freshness.label}</span>}
         {(api.country || []).map((c) => (
           <span key={c} className="http-overview-chip">{c}</span>
         ))}
         {api.frequency && <span className="http-overview-chip">{api.frequency}</span>}
+        {api.kind && <span className="http-overview-chip">{api.kind}</span>}
       </div>
+
+      {spec.notes?.length > 0 && (
+        <div className="http-overview-section">
+          <h4 className="http-overview-subtitle">Catalogue notes</h4>
+          <ul className="http-overview-list">
+            {spec.notes.map((note) => (
+              <li key={note} className="http-overview-trust-meta">{note}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {api.setup?.sections?.length > 0 && (
+        <div className="http-overview-section">
+          <div className="http-overview-section-head">
+            <h4 className="http-overview-subtitle">
+              {api.setup.label ? api.setup.label.replace(/_/g, " ") : "Getting started"}
+            </h4>
+            {(api.setup.portalUrl || api.setup.registerUrl) && (
+              <div className="http-overview-tools http-overview-tools-inline">
+                {api.setup.registerUrl && (
+                  <a
+                    href={api.setup.registerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="http-btn-ghost http-btn-link"
+                  >
+                    Register ↗
+                  </a>
+                )}
+                {api.setup.portalUrl && api.setup.portalUrl !== api.setup.registerUrl && (
+                  <a
+                    href={api.setup.portalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="http-btn-ghost http-btn-link"
+                  >
+                    Developer portal ↗
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+          {api.setup.sections.map((section) => (
+            <div key={section.title} className="http-overview-setup-block">
+              <p className="http-overview-setup-title">{section.title}</p>
+              <ul className="http-overview-list">
+                {(section.items || []).map((item) => (
+                  <li key={item} className="http-overview-desc">{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Authorization — Postman style */}
       {spec.auth && (

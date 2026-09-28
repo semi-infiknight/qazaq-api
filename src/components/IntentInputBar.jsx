@@ -55,6 +55,11 @@ export default function IntentInputBar({
     onSubmit();
   };
 
+  const acceptGhost = () => {
+    if (!showGhost || !ghostPrompt) return;
+    onChange(ghostPrompt);
+  };
+
   return (
     <form
       className={[
@@ -88,7 +93,7 @@ export default function IntentInputBar({
           onKeyDown={(event) => {
             if (event.key === "Tab" && showGhost && ghostPrompt && !event.shiftKey) {
               event.preventDefault();
-              onChange(ghostPrompt);
+              acceptGhost();
               return;
             }
             if (event.key === "Enter" && !event.shiftKey) {
@@ -97,19 +102,35 @@ export default function IntentInputBar({
             }
           }}
         />
-        <button
-          type="submit"
-          className="ai-input-send"
-          disabled={!hasValue || submitting}
-          aria-label={submitting ? "Finding APIs" : "Send"}
-        >
-          <span className="ai-input-send-mark" aria-hidden="true">
-            <span className="ai-input-send-icon">
-              <SendIcon />
+        <div className="ai-input-actions">
+          {showGhost && ghostPrompt ? (
+            <button
+              type="button"
+              className="ai-input-tab-hint"
+              onClick={acceptGhost}
+              aria-label="Use example prompt (Tab)"
+              title="Use example prompt (Tab)"
+            >
+              <kbd className="ai-input-tab-key" aria-hidden="true">
+                <span className="ai-input-tab-key-wing" />
+                <span className="ai-input-tab-key-label">Tab</span>
+              </kbd>
+            </button>
+          ) : null}
+          <button
+            type="submit"
+            className="ai-input-send"
+            disabled={!hasValue || submitting}
+            aria-label={submitting ? "Finding APIs" : "Send"}
+          >
+            <span className="ai-input-send-mark" aria-hidden="true">
+              <span className="ai-input-send-icon">
+                <SendIcon />
+              </span>
+              <span className="ai-input-send-busy" />
             </span>
-            <span className="ai-input-send-busy" />
-          </span>
-        </button>
+          </button>
+        </div>
       </div>
     </form>
   );

@@ -4,12 +4,17 @@ import { defaultIntentStepDelay, useIntentReveal } from "../../hooks/useIntentRe
 const IntentRevealContext = createContext(null);
 
 export function buildIntentRevealSegments(blocks, view = "timeline") {
-  const segments = ["header"];
+  const segments = [];
 
-  if (view === "timeline") segments.push("diagram");
-  if (view === "flows") segments.push("canvas");
-  if (view === "stack") segments.push("canvas", "trunk-1", "trunk-2", "trunk-3");
-  else segments.push("intro");
+  if (view === "timeline") {
+    segments.push("canvas", "diagram", "intro");
+  } else if (view === "flows") {
+    segments.push("canvas", "intro");
+  } else if (view === "stack") {
+    segments.push("canvas", "trunk-1", "trunk-2", "trunk-3");
+  } else {
+    segments.push("intro");
+  }
 
   blocks.forEach((block, blockIndex) => {
     segments.push(`feature-${blockIndex}`);

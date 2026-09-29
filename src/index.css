@@ -5686,7 +5686,8 @@ body.catalogue-mobile-sheet-open {
   }
 
   .catalogue-search-desktop {
-    display: none;
+    display: flex;
+    margin-bottom: 0.5rem;
   }
 
   .catalogue-mobile-nav {

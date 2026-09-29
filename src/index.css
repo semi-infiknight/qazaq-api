@@ -660,56 +660,6 @@ body.catalogue-loading-more .site-footer {
   margin-bottom: 0.5rem;
 }
 
-/* Fixed 1200×630 frame for OG social capture (og-capture.html) */
-html.og-capture-run,
-html.og-capture-run body {
-  margin: 0;
-  width: 1200px;
-  height: 630px;
-  overflow: hidden;
-  background: #0a0a0a;
-}
-
-.og-capture-root {
-  position: relative;
-  width: 1200px;
-  height: 630px;
-  overflow: hidden;
-  background: #0a0a0a;
-}
-
-.og-capture-root .kz-river--page {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  opacity: 0.55;
-  pointer-events: none;
-}
-
-.og-capture-hero {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 12px;
-  box-sizing: border-box;
-}
-
-.og-capture-hero .hero-arch-stack {
-  width: 100%;
-  max-width: 1180px;
-}
-
-.og-capture-hero .kz-af-stage {
-  min-height: 380px;
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-
 .hero-arch-stack {
   display: grid;
   gap: 0;
@@ -1985,11 +1935,13 @@ html.og-capture-run body {
   position: relative;
   display: block;
   min-height: 6.75rem;
-  padding: 0.95rem 3.25rem 0.95rem 1rem;
+  padding: 0.95rem 3.25rem 2.65rem 1rem;
   border: 1px solid color-mix(in srgb, var(--line) 85%, transparent);
   border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--surface) 18%, transparent);
-  backdrop-filter: blur(6px);
+  background: color-mix(in srgb, var(--surface) 94%, #0a0a0a);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+  isolation: isolate;
   transition:
     border-color var(--dur-2) var(--ease-enter),
     background var(--dur-2) var(--ease-enter),
@@ -2001,12 +1953,13 @@ html.og-capture-run body {
 }
 
 .ai-input-ghost {
+  z-index: 0;
   position: absolute;
-  inset: 0.95rem 3.25rem auto 1rem;
+  inset: 0.95rem 3.25rem 2.65rem 1rem;
   display: flex;
   align-items: flex-start;
   gap: 1px;
-  max-width: calc(100% - 4.25rem);
+  min-width: 0;
   pointer-events: none;
   color: hsl(var(--kz-ink-dim) / 0.5);
   font-family: var(--font-sans);
@@ -2022,7 +1975,10 @@ html.og-capture-run body {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
+  min-width: 0;
   max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .ai-input-ghost-caret {
@@ -2036,7 +1992,6 @@ html.og-capture-run body {
 
 .ai-input-ghosting .ai-input-ghost {
   right: 6.85rem;
-  max-width: calc(100% - 7.85rem);
 }
 
 .ai-input-ghosting:focus-within .ai-input-ghost {
@@ -2071,6 +2026,8 @@ html.og-capture-run body {
 }
 
 .ai-input-field {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   min-height: 1.5rem;
@@ -2273,17 +2230,25 @@ html.og-capture-run body {
 }
 
 .ai-input-inline .ai-input-shell {
-  min-height: 0;
-  padding: 0.55rem 2.75rem 0.55rem 0.75rem;
+  min-height: 2.85rem;
+  max-height: 6.5rem;
+  padding: 0.55rem 2.75rem 2.15rem 0.75rem;
 }
 
 .ai-input-inline.ai-input-ghosting .ai-input-shell {
   padding-right: 5.65rem;
 }
 
+.ai-input-inline .ai-input-ghost {
+  inset: 0.55rem 2.75rem 2.15rem 0.75rem;
+}
+
 .ai-input-inline.ai-input-ghosting .ai-input-ghost {
   right: 5.65rem;
-  max-width: calc(100% - 6.4rem);
+}
+
+.ai-input-inline .ai-input-ghost-text {
+  -webkit-line-clamp: 2;
 }
 
 .ai-input-inline .ai-input-field {
@@ -2313,6 +2278,106 @@ html.og-capture-run body {
 @keyframes ai-input-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 860px) {
+  .ai-input-hero .ai-input-shell {
+    min-height: 5.75rem;
+    padding: 0.85rem 3rem 2.55rem 0.85rem;
+  }
+
+  .ai-input-hero .ai-input-ghost {
+    inset: 0.85rem 3rem 2.55rem 0.85rem;
+    font-size: 0.92rem;
+    -webkit-line-clamp: 2;
+  }
+
+  .ai-input-hero .ai-input-ghost-text {
+    -webkit-line-clamp: 2;
+  }
+
+  .ai-input-hero.ai-input-ghosting .ai-input-shell {
+    padding-right: 5.35rem;
+  }
+
+  .ai-input-hero.ai-input-ghosting .ai-input-ghost {
+    right: 5.35rem;
+  }
+
+  .hero-arch {
+    position: relative;
+    z-index: 0;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .kz-af {
+    overflow: hidden;
+  }
+
+  .catalogue-search-stack {
+    position: relative;
+    z-index: 2;
+  }
+
+  .catalogue-mobile-search-field .ai-input-shell {
+    background: color-mix(in srgb, var(--surface) 98%, #0f1118);
+  }
+
+  .intent-flows-stage {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .intent-view--flows {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .service-main-content {
+    padding: 1rem 1rem 1.25rem;
+  }
+
+  .service-breadcrumb {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.15rem;
+  }
+
+  .service-breadcrumb-current {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .http-overview-hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .http-overview-auth-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-input-tab-hint {
+    display: none;
+  }
+
+  .ai-input-ghosting .ai-input-shell,
+  .ai-input-inline.ai-input-ghosting .ai-input-shell {
+    padding-right: 3rem;
+  }
+
+  .ai-input-ghosting .ai-input-ghost,
+  .ai-input-inline.ai-input-ghosting .ai-input-ghost {
+    right: 3rem;
   }
 }
 

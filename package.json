@@ -12,7 +12,8 @@
     "dev:server": "node --watch server/index.js",
     "dev:reset": "bash scripts/dev-reset.sh",
     "dev:verify": "bash scripts/dev-verify.sh",
-    "build": "vite build",
+    "build": "vite build && node scripts/generate-og.mjs",
+    "og:generate": "node scripts/generate-og.mjs",
     "embed:build": "node scripts/build-api-embeddings.mjs && node scripts/build-feature-embeddings.mjs",
     "embed:features": "node scripts/build-feature-embeddings.mjs",
     "cap:build": "node scripts/build-api-capability-matrix.mjs",
@@ -38,7 +39,9 @@
     "eslint": "^9.17.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
+    "gifenc": "^1.0.3",
     "postcss": "^8.4.49",
+    "sharp": "^0.33.5",
     "tailwindcss": "^3.4.17",
     "vite": "^6.0.5"
   }

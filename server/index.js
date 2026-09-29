@@ -284,6 +284,26 @@ app.get("/health", (_req, res) => {
   res.json({ ok: true, apis: KZ_APIS.length, updated: CATALOGUE_META.updated });
 });
 
+function resolveOgGifPath() {
+  const distGif = path.join(__dirname, "..", "dist", "og.gif");
+  const publicGif = path.join(__dirname, "..", "public", "og.gif");
+  if (isProd && fs.existsSync(distGif)) return distGif;
+  if (fs.existsSync(publicGif)) return publicGif;
+  return null;
+}
+
+/** Open Graph / social preview — animated catalogue loader (not SPA HTML). */
+app.get("/og", (req, res) => {
+  const gif = resolveOgGifPath();
+  if (!gif) {
+    res.status(503).type("text/plain").send("OG preview not built yet — run npm run build");
+    return;
+  }
+  res.setHeader("Cache-Control", "public, max-age=86400, immutable");
+  res.type("image/gif");
+  res.sendFile(gif);
+});
+
 const publicDir = path.join(__dirname, "..", "public");
 app.use(express.static(publicDir));
 

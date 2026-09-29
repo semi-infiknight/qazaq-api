@@ -10,6 +10,7 @@ export default defineConfig({
       "/api": { target: "http://localhost:8787", changeOrigin: true },
       "/openapi.json": { target: "http://localhost:8787", changeOrigin: true },
       "/health": { target: "http://localhost:8787", changeOrigin: true },
+      "/og": { target: "http://localhost:8787", changeOrigin: true },
     },
   },
 });

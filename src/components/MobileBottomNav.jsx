@@ -27,14 +27,23 @@ export default function MobileBottomNav() {
     const syncBrowserChrome = () => {
       if (!viewport.height) {
         document.documentElement.style.setProperty("--browser-ui-offset", "0px");
-        document.documentElement.style.setProperty("--viewport-offset-top", "0px");
         return;
       }
 
-      const chrome = Math.max(0, window.innerHeight - viewport.offsetTop - viewport.height);
-      const capped = Math.min(chrome, 120);
+      // Measure how far a bottom-fixed edge sits past the visible viewport.
+      // innerHeight math double-counts offsetTop on browsers that already
+      // attach position:fixed to the visual viewport, which shoved the ghost
+      // prompt into the browser chrome.
+      const probe = document.createElement("div");
+      probe.setAttribute("aria-hidden", "true");
+      probe.style.cssText =
+        "position:fixed;right:0;bottom:0;width:0;height:0;pointer-events:none;visibility:hidden;";
+      document.body.appendChild(probe);
+      const overlap = Math.max(0, probe.getBoundingClientRect().bottom - viewport.height);
+      probe.remove();
+
+      const capped = Math.min(Math.round(overlap), 180);
       document.documentElement.style.setProperty("--browser-ui-offset", `${capped}px`);
-      document.documentElement.style.setProperty("--viewport-offset-top", `${viewport.offsetTop}px`);
     };
 
     syncBrowserChrome();
@@ -47,7 +56,27 @@ export default function MobileBottomNav() {
       viewport.removeEventListener("scroll", syncBrowserChrome);
       window.removeEventListener("orientationchange", syncBrowserChrome);
       document.documentElement.style.removeProperty("--browser-ui-offset");
-      document.documentElement.style.removeProperty("--viewport-offset-top");
+    };
+  }, [onHome]);
+
+  useEffect(() => {
+    if (!onHome) return undefined;
+    const bar = document.querySelector(".catalogue-mobile-bar");
+    if (!bar) return undefined;
+
+    const publishDockHeight = () => {
+      const height = Math.ceil(bar.getBoundingClientRect().height);
+      if (height > 0) {
+        document.documentElement.style.setProperty("--catalogue-dock-height", `${height}px`);
+      }
+    };
+
+    publishDockHeight();
+    const observer = new ResizeObserver(publishDockHeight);
+    observer.observe(bar);
+    return () => {
+      observer.disconnect();
+      document.documentElement.style.removeProperty("--catalogue-dock-height");
     };
   }, [onHome]);
 

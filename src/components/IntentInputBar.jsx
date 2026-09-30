@@ -77,8 +77,10 @@ export default function IntentInputBar({
       <div className="ai-input-shell">
         {showGhost ? (
           <span className="ai-input-ghost" aria-hidden="true">
-            <span className="ai-input-ghost-text">{ghostText}</span>
-            <span className="ai-input-ghost-caret" />
+            <span className="ai-input-ghost-text">
+              {ghostText}
+              <span className="ai-input-ghost-caret" />
+            </span>
           </span>
         ) : null}
         <textarea
